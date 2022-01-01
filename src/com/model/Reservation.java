@@ -8,7 +8,7 @@ public class Reservation {
     Date checkOutDate;
     float bill;
     long nif;
-    String registrationNumber;
+    String regNumber;
     int state;
 
     public String getClientName() {
@@ -51,12 +51,12 @@ public class Reservation {
         this.nif = nif;
     }
 
-    public String getRegistrationNumber() {
-        return registrationNumber;
+    public String getRegNumber() {
+        return regNumber;
     }
 
-    public void setRegistrationNumber(String registrationNumber) {
-        this.registrationNumber = registrationNumber;
+    public void setRegNumber(String registrationNumber) {
+        this.regNumber = registrationNumber;
     }
 
     public int getState() {
