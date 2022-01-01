@@ -3,13 +3,32 @@ package com.model;
 import java.sql.Date;
 
 public class Reservation {
+    private int id;
     String clientName;
     Date checkInDate;
     Date checkOutDate;
-    float bill;
-    long nif;
+    double bill;
+    int nif;
     String regNumber;
     int state;
+
+    public Reservation(String clientName, Date checkInDate, Date checkOutDate, double bill, int nif, String regNumber, int state) {
+        this.clientName = clientName;
+        this.checkInDate = checkInDate;
+        this.checkOutDate = checkOutDate;
+        this.bill = bill;
+        this.nif = nif;
+        this.regNumber = regNumber;
+        this.state = state;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getClientName() {
         return clientName;
@@ -35,7 +54,7 @@ public class Reservation {
         this.checkOutDate = checkOutDate;
     }
 
-    public float getBill() {
+    public double getBill() {
         return bill;
     }
 
@@ -43,11 +62,11 @@ public class Reservation {
         this.bill = bill;
     }
 
-    public long getNif() {
+    public int getNif() {
         return nif;
     }
 
-    public void setNif(long nif) {
+    public void setNif(int nif) {
         this.nif = nif;
     }
 
