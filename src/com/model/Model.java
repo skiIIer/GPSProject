@@ -4,17 +4,20 @@ import java.sql.Date;
 import java.sql.SQLException;
 
 public class Model {
+    CRUD crud;
+
     public Model(){
+        DatabaseModel databaseModel;
         try {
-            new DatabaseModel();//Initializes database
+            databaseModel = new DatabaseModel();//Initializes database
+            crud = new CRUD(databaseModel.getConnection());//Initializes API for database operations
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        new CRUD();//Initializes API for database operations
     }
     public boolean addReservation(String name, Date checkIn, Date checkOut, double bill, int nif, String regNumber, int state){
         Reservation reservation = new Reservation(name, checkIn, checkOut, bill, nif, regNumber, state);
-        CRUD.create(reservation);
+        crud.create(reservation);
         return true;
     }
 //    public boolean editReservation(){}

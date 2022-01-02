@@ -4,7 +4,7 @@ import java.sql.*;
 
 public class DatabaseModel {
     private static Connection connection;
-    private static final String url = "jdbc:mysql://localhost:3306", user = "root", password = "root";
+    private static final String url = "jdbc:mysql://localhost:3001", user = "root", password = "espera10";
     private static String sql = "CREATE DATABASE IF NOT EXISTS mms";
 
     public DatabaseModel() throws SQLException {

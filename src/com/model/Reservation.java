@@ -4,13 +4,13 @@ import java.sql.Date;
 
 public class Reservation {
     private int id;
-    String clientName;
-    Date checkInDate;
-    Date checkOutDate;
-    double bill;
-    int nif;
-    String regNumber;
-    int state;
+    private String clientName;
+    private Date checkInDate;
+    private Date checkOutDate;
+    private double bill;
+    private int nif;
+    private String regNumber;
+    private int state;
 
     public Reservation(String clientName, Date checkInDate, Date checkOutDate, double bill, int nif, String regNumber, int state) {
         this.clientName = clientName;
