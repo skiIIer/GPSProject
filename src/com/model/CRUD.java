@@ -12,12 +12,15 @@ public class CRUD {
     }
 
     public static void create(Reservation reservation){
+        //inserir isto na bd para o create funcionar
+        //INSERT INTO mms.categories(idCategories, name) VALUES(1, 'Large');
+        //INSERT INTO mms.slots (idSlots, Categories_idCategories) VALUES (1, 1);
         String sql = "INSERT INTO mms.reservations (idReservations, clientName, checkInDate, checkOutDate, bill, nif, vehicleRegistrationNumber, state, Slots_idSlots)" +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try {
             pstm = connection.prepareStatement(sql);
-            pstm.setInt(1, 1);
+            pstm.setInt(1, 2);
             pstm.setString(2, reservation.getClientName());
             pstm.setDate(3, reservation.getCheckInDate());
             pstm.setDate(4, reservation.getCheckOutDate());
@@ -36,5 +39,20 @@ public class CRUD {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static boolean delete(int id){
+        String sql = "DELETE FROM mms.reservations WHERE idReservations=2";
+
+        try {
+            pstm = connection.prepareStatement(sql);
+            if (pstm.executeUpdate() == 0)
+                return false;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return true;
     }
 }

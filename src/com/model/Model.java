@@ -22,7 +22,14 @@ public class Model {
     }
 //    public boolean editReservation(){}
 //    public boolean verifyFormat(){}
-//    public boolean cancelReservation(){}
+
+    public boolean cancelReservation(int id){
+        if (crud.delete(id) == false)
+            return false;
+
+        return true;
+    }
+
 //    public String viewReservations(){}
 //    public boolean refuel(){}
 //    public String verifySlot(){}
