@@ -19,7 +19,7 @@ public class CRUD {
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try {
-            pstm = connection.prepareStatement(sql);
+            pstm = (PreparedStatement) connection.prepareStatement(sql);
             pstm.setInt(1, 2);
             pstm.setString(2, reservation.getClientName());
             pstm.setDate(3, reservation.getCheckInDate());
@@ -30,14 +30,17 @@ public class CRUD {
             pstm.setInt(8, reservation.getState());
             pstm.setInt(9, 1);
             pstm.execute();
-            //ResultSet rs = pstm.executeQuery();
-            /*while (rs.next()) {
-                System.out.println(rs.getInt("idCategories"));
-                System.out.println(rs.getString("name"));
-            }*/
-
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            try{
+                if(pstm!=null)
+                    pstm.close();
+                if(connection!=null)
+                    connection.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

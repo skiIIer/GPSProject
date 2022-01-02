@@ -4,15 +4,11 @@ import java.sql.*;
 
 public class DatabaseModel {
     private static Connection connection;
-    private static final String url = "jdbc:mysql://localhost:3001", user = "root", password = "espera10";
+    private static final String url = "jdbc:mysql://localhost:3306", user = "root", password = "root";
     private static String sql = "CREATE DATABASE IF NOT EXISTS mms";
 
     public DatabaseModel() throws SQLException {
         initializeDatabase();
-    }
-
-    public static Connection getConnection() {
-        return connection;
     }
 
     private static boolean tableExists(Connection connection, String tableName) throws SQLException {
@@ -27,7 +23,7 @@ public class DatabaseModel {
     }
 
     public static void initializeDatabase() throws SQLException {
-        connection = createConnectionMySQL();
+        Connection connection = createConnectionMySQL();
         PreparedStatement pstm = connection.prepareStatement(sql);
 
         pstm.execute();
