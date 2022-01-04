@@ -5,6 +5,7 @@ import com.model.Reservation;
 
 import java.sql.*;
 import java.sql.Connection;
+import java.util.Date;
 import java.util.Scanner;
 
 public class Main {
@@ -14,9 +15,7 @@ public class Main {
     public static void Interface_ReservationsSubmenu(){
         int option;
 
-        String name, category, vrn;
-
-        while (true){
+        while (true) {
             System.out.println("---------------------------------------------------------------------\n" +
                     "MMS / Reservations\n" +
                     "---------------------------------------------------------------------");
@@ -24,46 +23,77 @@ public class Main {
             System.out.print("Option:");
             while (!scanner.hasNextInt()) scanner.next();
             option = scanner.nextInt();
-            switch (option){
+            switch (option) {
                 case 1:
+                    String dateCheckIn;
                     System.out.println("---------------------------------------------------------------------\n" +
                             "MMS / Reservations / Add\n" +
                             "---------------------------------------------------------------------\n" +
                             "Type 'quit' on any field to return to the Reservations submenu\n");
-                    System.out.println("Check-In:");
-                    System.out.print("\tDay: ");
-                    while (!scanner.hasNextInt()) scanner.next();
-                    int dayCI = scanner.nextInt();
-                    System.out.print("\tMonth: ");
-                    while (!scanner.hasNextInt()) scanner.next();
-                    int monthCI = scanner.nextInt();
-                    System.out.print("\tYear: ");
-                    while (!scanner.hasNextInt()) scanner.next();
-                    int yearCI = scanner.nextInt();
+                    while (true) {
+                        System.out.println("Check-In:");
+                        System.out.print("\tDay: ");
+                        while (!scanner.hasNextInt()) scanner.next();
+                        int dayCI = scanner.nextInt();
+                        System.out.print("\tMonth: ");
+                        while (!scanner.hasNextInt()) scanner.next();
+                        int monthCI = scanner.nextInt();
+                        System.out.print("\tYear: ");
+                        while (!scanner.hasNextInt()) scanner.next();
+                        int yearCI = scanner.nextInt();
+                        if (model.verifyDateCI(dayCI, monthCI, yearCI)) {
+                            dateCheckIn = dayCI+"-"+monthCI+"-"+yearCI;
+                            break;
+                        }
+                    }
 
-                    System.out.println("Check-Out:");
-                    System.out.print("\tDay: ");
-                    while (!scanner.hasNextInt()) scanner.next();
-                    int dayCO = scanner.nextInt();
-                    System.out.print("\tMonth: ");
-                    while (!scanner.hasNextInt()) scanner.next();
-                    int monthCO = scanner.nextInt();
-                    System.out.print("\tYear: ");
-                    while (!scanner.hasNextInt()) scanner.next();
-                    int yearCO = scanner.nextInt();
 
-                    System.out.print("Name: ");
-                    while (!scanner.hasNextLine()) name = scanner.nextLine();
+                    while (true) {
+                        System.out.println("Check-Out:");
+                        System.out.print("\tDay: ");
+                        while (!scanner.hasNextInt()) scanner.next();
+                        int dayCO = scanner.nextInt();
+                        System.out.print("\tMonth: ");
+                        while (!scanner.hasNextInt()) scanner.next();
+                        int monthCO = scanner.nextInt();
+                        System.out.print("\tYear: ");
+                        while (!scanner.hasNextInt()) scanner.next();
+                        int yearCO = scanner.nextInt();
+                        if (model.verifyDateCO(dayCO, monthCO, yearCO, dateCheckIn))
+                            break;
+                    }
 
-                    System.out.print("NIF / TIN: ");
-                    while (!scanner.hasNextInt()) scanner.next();
-                    int nif = scanner.nextInt();
+                    while (true) {
+                        System.out.print("Name: ");
+                        while (!scanner.hasNext()) scanner.next();
+                        String name = scanner.nextLine();
+                        if (model.verifyName(name))
+                            break;
+                    }
 
-                    System.out.print("Vehicle Category (Large, Medium, Small): ");
-                    while(!scanner.hasNext()) category = scanner.next();
+                    while (true) {
+                        System.out.print("NIF / TIN: ");
+                        while (!scanner.hasNextInt()) scanner.next();
+                        int nif = scanner.nextInt();
+                        if (model.verifyNIF(nif))
+                            break;
+                    }
 
-                    System.out.print("Vehicle Registration Number / VRN (Format:XX-XXXX-XX): ");
-                    while(!scanner.hasNext()) vrn = scanner.next();
+                    while (true) {
+                        System.out.print("Vehicle Category (Large, Medium, Small): ");
+                        while (!scanner.hasNext()) scanner.next();
+                        String category = scanner.next();
+                        if (model.verifyCategory(category))
+                            break;
+                        }
+
+                    while (true) {
+                        System.out.print("Vehicle Registration Number / VRN (Format:XX-XXXX-XX): ");
+                        while (!scanner.hasNext()) scanner.next();
+                        String vrn = scanner.next();
+                        if(model.verifyVRN(vrn))
+                            break;
+                    }
 
                     break;
                 case 2:
@@ -113,10 +143,12 @@ public class Main {
             System.out.println("Reservation successfully made.");
         else
             System.out.println("\nNo slots available for the specified date.");
+        //model.addReservation("To Manel", Date.valueOf("2027-03-01"), Date.valueOf("2029-11-31"), 15.2, 234124721, "AS-27-SD", 2, "Medium");
+
         //model.addReservation("Bob", Date.valueOf("2022-04-23"), Date.valueOf("2023-02-12"), 15.2, 521124721, "SA-27-SD", 2);
         //model.cancelReservation(2);
 
-        //Interface();
+        Interface();
         return;
     }
 }
