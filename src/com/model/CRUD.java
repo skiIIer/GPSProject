@@ -52,8 +52,8 @@ public class CRUD {
         LocalDate dataCheckIn;
         LocalDate dataAtual = LocalDate.now();
 
-        String sql1 = "SELECT * FROM mms.reservations WHERE idReservations=?";
-        String sql2 = "DELETE FROM mms.reservations WHERE idReservations=?";
+        String sql1 = "SELECT * FROM mms.reservations WHERE idReservations = ?";
+        String sql2 = "DELETE FROM mms.reservations WHERE idReservations = ?";
 
         try {
             pstm = connection.prepareStatement(sql1);
@@ -61,10 +61,8 @@ public class CRUD {
             ResultSet rs = pstm.executeQuery();
 
             //verifica se id existe
-            rs.next();
-            if (rs == null)
+            if (!rs.next())
                 return false;
-
 
             //converter data em LocalDate
             data = rs.getDate("checkInDate");
@@ -72,7 +70,7 @@ public class CRUD {
 
 
             //reserva ativa nao se pode cancelar
-            if(dataCheckIn.compareTo(dataAtual) > 0){
+            if(dataCheckIn.isAfter(dataAtual)){
                 return false;
             }
 

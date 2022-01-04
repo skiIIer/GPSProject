@@ -26,10 +26,7 @@ public class Model {
 //    public boolean verifyFormat(){}
 
     public boolean cancelReservation(int id){
-        if (crud.delete(id) == false)
-            return false;
-
-        return true;
+        return crud.delete(id);
     }
 
 //    public String viewReservations(){}
