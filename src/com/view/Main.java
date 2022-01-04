@@ -1,6 +1,7 @@
 package com.view;
 
 import com.model.Model;
+import com.model.Reservation;
 
 import java.sql.*;
 import java.sql.Connection;
@@ -13,6 +14,8 @@ public class Main {
     public static void Interface_ReservationsSubmenu(){
         int option;
 
+        String name, category, vrn;
+
         while (true){
             System.out.println("---------------------------------------------------------------------\n" +
                     "MMS / Reservations\n" +
@@ -23,7 +26,45 @@ public class Main {
             option = scanner.nextInt();
             switch (option){
                 case 1:
-                    System.out.println("Add Reservations!!");
+                    System.out.println("---------------------------------------------------------------------\n" +
+                            "MMS / Reservations / Add\n" +
+                            "---------------------------------------------------------------------\n" +
+                            "Type 'quit' on any field to return to the Reservations submenu\n");
+                    System.out.println("Check-In:");
+                    System.out.print("\tDay: ");
+                    while (!scanner.hasNextInt()) scanner.next();
+                    int dayCI = scanner.nextInt();
+                    System.out.print("\tMonth: ");
+                    while (!scanner.hasNextInt()) scanner.next();
+                    int monthCI = scanner.nextInt();
+                    System.out.print("\tYear: ");
+                    while (!scanner.hasNextInt()) scanner.next();
+                    int yearCI = scanner.nextInt();
+
+                    System.out.println("Check-Out:");
+                    System.out.print("\tDay: ");
+                    while (!scanner.hasNextInt()) scanner.next();
+                    int dayCO = scanner.nextInt();
+                    System.out.print("\tMonth: ");
+                    while (!scanner.hasNextInt()) scanner.next();
+                    int monthCO = scanner.nextInt();
+                    System.out.print("\tYear: ");
+                    while (!scanner.hasNextInt()) scanner.next();
+                    int yearCO = scanner.nextInt();
+
+                    System.out.print("Name: ");
+                    while (!scanner.hasNextLine()) name = scanner.nextLine();
+
+                    System.out.print("NIF / TIN: ");
+                    while (!scanner.hasNextInt()) scanner.next();
+                    int nif = scanner.nextInt();
+
+                    System.out.print("Vehicle Category (Large, Medium, Small): ");
+                    while(!scanner.hasNext()) category = scanner.next();
+
+                    System.out.print("Vehicle Registration Number / VRN (Format:XX-XXXX-XX): ");
+                    while(!scanner.hasNext()) vrn = scanner.next();
+
                     break;
                 case 2:
                     System.out.println("View Reservations!!");
