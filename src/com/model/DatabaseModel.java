@@ -19,7 +19,7 @@ public class DatabaseModel {
         stm=null;
     }
 
-    public String verifySlot(String category, Date checkI, Date checkO){
+    public int verifySlot(String category, Date checkI, Date checkO){
         List al = new ArrayList<Integer>();
 
         String sql = "SELECT s.idSlots \n" +
@@ -48,13 +48,13 @@ public class DatabaseModel {
 
                 resultSet = stm.executeQuery(sql);
                 while(resultSet.next()){
-                    System.out.println(resultSet.getInt("idSlots"));
+                    return resultSet.getInt("idSlots");
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return sql;
+        return 0;
     }
 
 

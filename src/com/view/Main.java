@@ -109,8 +109,10 @@ public class Main {
 
     public static void main(String[] args) {
         model = new Model();
-        model.addReservation("To Manel", Date.valueOf("2027-03-01"), Date.valueOf("2029-11-31"), 15.2, 234124721, "AS-27-SD", 2, "Medium");
-
+        if(model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-11-31"), 15.2, 234124721, "AS-27-SD", 2, "Large"))
+            System.out.println("Reservation successfully made.");
+        else
+            System.out.println("\nNo slots available for the specified date.");
         //model.addReservation("Bob", Date.valueOf("2022-04-23"), Date.valueOf("2023-02-12"), 15.2, 521124721, "SA-27-SD", 2);
         //model.cancelReservation(2);
 

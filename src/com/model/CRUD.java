@@ -13,7 +13,7 @@ public class CRUD {
         pstm = null;
     }
 
-    public static void create(Reservation reservation){
+    public static void create(Reservation reservation, int availableSlot){
         //inserir isto na bd para o create funcionar
         //INSERT INTO mms.categories(idCategories, name) VALUES(1, 'Large');
         //INSERT INTO mms.slots (idSlots, Categories_idCategories) VALUES (1, 1);
@@ -30,7 +30,7 @@ public class CRUD {
             pstm.setInt(5, reservation.getNif());
             pstm.setString(6, reservation.getRegNumber());
             pstm.setInt(7, reservation.getState());
-            pstm.setInt(8, 17);
+            pstm.setInt(8, availableSlot);
             pstm.execute();
         } catch (SQLException e) {
             e.printStackTrace();

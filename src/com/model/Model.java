@@ -18,10 +18,14 @@ public class Model {
     }
 
     public boolean addReservation(String name, Date checkIn, Date checkOut, double bill, int nif, String regNumber, int state, String category){
-        verifySlot(category, checkIn, checkOut);
-        Reservation reservation = new Reservation(name, checkIn, checkOut, bill, nif, regNumber, state, category);
-        crud.create(reservation);
-        return true;
+        int availableSlot;
+        availableSlot = verifySlot(category, checkIn, checkOut);
+        if(availableSlot!=0) {
+            Reservation reservation = new Reservation(name, checkIn, checkOut, bill, nif, regNumber, state, category);
+            crud.create(reservation, availableSlot);
+            return true;
+        } else
+            return false;
     }
 //    public boolean editReservation(){}
 //    public boolean verifyFormat(){}
@@ -35,7 +39,7 @@ public class Model {
 
 //    public String viewReservations(){}
 //    public boolean refuel(){}
-      public String verifySlot(String category, Date checkIn, Date checkOut){
+      public int verifySlot(String category, Date checkIn, Date checkOut){
         return databaseModel.verifySlot(category, checkIn, checkOut);
       }
 //    public String viewStatistics(){}
