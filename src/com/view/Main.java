@@ -1,6 +1,7 @@
 package com.view;
 
 import com.model.Model;
+import com.model.Reservation;
 
 import java.sql.*;
 import java.sql.Connection;
@@ -69,8 +70,17 @@ public class Main {
     public static void main(String[] args) {
         model = new Model();
         model.addReservation("Rui", Date.valueOf("2022-03-31"), Date.valueOf("2023-03-31"), 15.2, 234124721, "AS-27-SD", 2);
+
+        Reservation res = new Reservation("To Ze", Date.valueOf("2022-03-31"), Date.valueOf("2023-03-31"), 15.2, 123123123, "AS-27-SD", 2);
+        res.setId(1);
+
+        model.editReservation(res);
+
+
         //model.addReservation("Bob", Date.valueOf("2022-04-23"), Date.valueOf("2023-02-12"), 15.2, 521124721, "SA-27-SD", 2);
-        //model.cancelReservation(2);
+        //model.cancelReservation(4);
+
+        //System.out.println(model.viewReservations());
 
         //Interface();
         return;

@@ -22,9 +22,9 @@ public class Model {
         crud.create(reservation);
         return true;
     }
-//    public boolean editReservation(int id){
-//        
-//    }
+    public boolean editReservation(Reservation reservation){
+        return crud.edit(reservation);
+    }
 //    public boolean verifyFormat(){}
 
     public boolean cancelReservation(int id){
@@ -35,8 +35,7 @@ public class Model {
     }
 
     public String viewReservations(){
-        ArrayList<Reservation> lista = new ArrayList<Reservation>();
-        lista = crud.view();
+        ArrayList<Reservation> lista = crud.view();
         String s = "";
         for(Reservation x : lista){
             s += x.getId() +
