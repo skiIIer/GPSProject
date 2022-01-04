@@ -22,7 +22,9 @@ public class Model {
         crud.create(reservation);
         return true;
     }
-//    public boolean editReservation(){}
+//    public boolean editReservation(int id){
+//        
+//    }
 //    public boolean verifyFormat(){}
 
     public boolean cancelReservation(int id){
@@ -32,7 +34,23 @@ public class Model {
         return true;
     }
 
-//    public String viewReservations(){}
+    public String viewReservations(){
+        ArrayList<Reservation> lista = new ArrayList<Reservation>();
+        lista = crud.view();
+        String s = "";
+        for(Reservation x : lista){
+            s += x.getId() +
+                    " | " + x.getClientName() +
+                    " | " + x.getCheckInDate() +
+                    " | " + x.getCheckOutDate() +
+                    " | " + Math.round(x.getBill()*100.0) / 100.0 +
+                    " | " + x.getNif() +
+                    " | " + x.getRegNumber() +
+                    " | " + x.getState() + "\n";
+        }
+        return s;
+
+    }
 //    public boolean refuel(){}
 //    public String verifySlot(){}
 //    public String viewStatistics(){}
