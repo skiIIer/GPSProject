@@ -34,7 +34,7 @@ public class CRUD {
             pstm.execute();
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
+        }/*finally {
             try{
                 if(pstm!=null)
                     pstm.close();
@@ -43,14 +43,16 @@ public class CRUD {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     public static boolean delete(int id){
-        String sql = "DELETE FROM mms.reservations WHERE idReservations=2";
+        String sql = "DELETE FROM mms.reservations WHERE idReservations=?";
 
         try {
             pstm = connection.prepareStatement(sql);
+            pstm.setInt(1, id);
+
             if (pstm.executeUpdate() == 0)
                 return false;
         }
@@ -61,27 +63,31 @@ public class CRUD {
         return true;
     }
 
-    /*public static ArrayList view(){
+    public static ArrayList view(){
         String sql="SELECT * FROM mms.reservations";
         String result;
         ArrayList<Reservation> lista= new ArrayList<Reservation>();
+        Reservation reservation;
 
         try {
             pstm=connection.prepareStatement(sql);
             ResultSet rs = pstm.executeQuery();
             while (rs.next()) {
-
-                lista.add(new Reservation(rs.getString("clientName"),
+                reservation = new Reservation(
+                        rs.getString("clientName"),
                         rs.getDate("checkInDate"),
                         rs.getDate("checkOutDate"),
                         rs.getFloat("bill"),
                         rs.getInt("nif"),
                         rs.getString("vehicleRegistrationNumber"),
-                        rs.getInt("state"))
-                        r);
+                        rs.getInt("state"));
+                reservation.setId(rs.getInt("idReservations"));
+
+                lista.add(reservation);
             }
         }catch (SQLException e){
             e.printStackTrace();
         }
-    }*/
+        return lista;
+    }
 }
