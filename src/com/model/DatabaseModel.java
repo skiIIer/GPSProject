@@ -14,17 +14,28 @@ public class DatabaseModel {
 
     public static void addCategoriesSlots() throws SQLException {
         String auxString = null; int auxInt=0; String sql;
+        int cont=0;
         Statement stm = connection.createStatement();
+        ResultSet rs;
 
         for(int i=0; i<3; i++){
             if(i==0){ auxInt=15; auxString="Small";}
             if(i==1){ auxInt=5; auxString="Medium";}
             if(i==2){ auxInt=2; auxString="Large";}
-            sql = "INSERT INTO mms.categories (name) VALUES ('" + auxString + "'); ";
-            stm.executeUpdate(sql);
-            for(int j=0; j<auxInt; j++){
-                sql =  "INSERT INTO mms.slots (slotName,Categories_idCategories) VALUES ('" + auxString.charAt(0) + (j+1) + "'," + (i+1) + "); ";
+            sql = "SELECT * FROM mms.categories WHERE idCategories=" + (i+1);
+            rs = stm.executeQuery(sql);
+            if(!rs.next()) {
+                sql = "INSERT INTO mms.categories (name) VALUES ('" + auxString + "'); ";
                 stm.executeUpdate(sql);
+            }
+            for(int j=0; j<auxInt; j++){
+                cont++;
+                sql = "SELECT * FROM mms.slots WHERE idSlots=" + cont;
+                rs = stm.executeQuery(sql);
+                if(!rs.next()) {
+                    sql = "INSERT INTO mms.slots (slotName,Categories_idCategories) VALUES ('" + auxString.charAt(0) + (j + 1) + "'," + (i + 1) + "); ";
+                    stm.executeUpdate(sql);
+                }
             }
         }
     }
