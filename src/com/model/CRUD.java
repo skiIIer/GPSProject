@@ -1,7 +1,11 @@
 package com.model;
 
 import java.sql.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class CRUD {
@@ -9,14 +13,11 @@ public class CRUD {
     private static PreparedStatement pstm;
 
     public CRUD(Connection connection){
-        this.connection = connection;
+        CRUD.connection = connection;
         pstm = null;
     }
 
     public static void create(Reservation reservation){
-        //inserir isto na bd para o create funcionar
-        //INSERT INTO mms.categories(idCategories, name) VALUES(1, 'Large');
-        //INSERT INTO mms.slots (idSlots, Categories_idCategories) VALUES (1, 1);
         String sql = "INSERT INTO mms.reservations (clientName, checkInDate, checkOutDate, bill, nif, vehicleRegistrationNumber, state, Slots_idSlots)" +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -47,12 +48,38 @@ public class CRUD {
     }
 
     public static boolean delete(int id){
-        String sql = "DELETE FROM mms.reservations WHERE idReservations=?";
+        Date data;
+        LocalDate dataCheckIn;
+        LocalDate dataAtual = LocalDate.now();
+
+        String sql1 = "SELECT * FROM mms.reservations WHERE idReservations=?";
+        String sql2 = "DELETE FROM mms.reservations WHERE idReservations=?";
 
         try {
-            pstm = connection.prepareStatement(sql);
+            pstm = connection.prepareStatement(sql1);
+            pstm.setInt(1,id);
+            ResultSet rs = pstm.executeQuery();
+
+            //verifica se id existe
+            rs.next();
+            if (rs == null)
+                return false;
+
+
+            //converter data em LocalDate
+            data = rs.getDate("checkInDate");
+            dataCheckIn = Instant.ofEpochMilli(data.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+
+
+            //reserva ativa nao se pode cancelar
+            if(dataCheckIn.compareTo(dataAtual) > 0){
+                return false;
+            }
+
+            pstm = connection.prepareStatement(sql2);
             pstm.setInt(1, id);
 
+            //delete
             if (pstm.executeUpdate() == 0)
                 return false;
         }
