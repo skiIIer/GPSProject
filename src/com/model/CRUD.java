@@ -70,7 +70,7 @@ public class CRUD {
 
 
             //reserva ativa nao se pode cancelar
-            if(dataCheckIn.isAfter(dataAtual)){
+            if(dataCheckIn.isBefore(dataAtual)){
                 return false;
             }
 
