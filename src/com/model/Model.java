@@ -31,7 +31,9 @@ public class Model {
         } else
             return false;
     }
-//    public boolean editReservation(){}
+    public boolean editReservation(Reservation reservation){
+        return crud.edit(reservation);
+    }
 //    public boolean verifyFormat(){}
 
     public boolean verifyDateCI(int day, int month, int year){
@@ -53,6 +55,22 @@ public class Model {
         return true;
     }
 
+    public String viewReservations(){
+        ArrayList<Reservation> lista = crud.view();
+        String s = "";
+        for(Reservation x : lista){
+            s += x.getId() +
+                    " | " + x.getClientName() +
+                    " | " + x.getCheckInDate() +
+                    " | " + x.getCheckOutDate() +
+                    " | " + Math.round(x.getBill()*100.0) / 100.0 +
+                    " | " + x.getNif() +
+                    " | " + x.getRegNumber() +
+                    " | " + x.getState() + "\n";
+        }
+        return s;
+
+    }
 
     public boolean verifyDateCO(int day, int month, int year, String dateCheckInStr){
         String date = day+"-"+month+"-"+year;

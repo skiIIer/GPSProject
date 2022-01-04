@@ -115,4 +115,55 @@ public class CRUD {
         }
         return lista;
     }
+
+    public static boolean edit(Reservation reservation){
+        String sql = "UPDATE mms.reservations " +
+                "SET clientName=?, checkInDate=?, checkOutDate=?, nif=?, vehicleRegistrationNumber=?" +
+                "WHERE idReservations=?";
+
+        try {
+            pstm = connection.prepareStatement(sql);
+            pstm.setString(1, reservation.getClientName());
+            pstm.setDate(2, reservation.getCheckInDate());
+            pstm.setDate(3, reservation.getCheckOutDate());
+            pstm.setInt(4, reservation.getNif());
+            pstm.setString(5, reservation.getRegNumber());
+            pstm.setInt(6, reservation.getId());
+
+            if (!pstm.execute())
+                return false;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
+    public static Reservation getReservation(int id){
+        String sql = "SELECT * FROM mms.reservations WHERE idReservations=?";
+        ResultSet rs;
+        Reservation reservation = null;
+        try {
+            pstm = connection.prepareStatement(sql);
+            pstm.setInt(1, id);
+
+            rs = pstm.executeQuery();
+            reservation = new Reservation(
+                    rs.getString("clientName"),
+                    rs.getDate("checkInDate"),
+                    rs.getDate("checkOutDate"),
+                    rs.getFloat("bill"),
+                    rs.getInt("nif"),
+                    rs.getString("vehicleRegistrationNumber"),
+                    rs.getInt("state"));
+            reservation.setId(rs.getInt("idReservations"));
+
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return reservation;
+    }
 }
