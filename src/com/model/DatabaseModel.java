@@ -11,6 +11,10 @@ public class DatabaseModel {
         initializeDatabase();
     }
 
+    public static Connection getConnection() {
+        return connection;
+    }
+
     private static boolean tableExists(Connection connection, String tableName) throws SQLException {
         DatabaseMetaData meta = connection.getMetaData();
         ResultSet resultSet = meta.getTables(null, null, tableName, new String[] {"TABLE"});
@@ -23,7 +27,7 @@ public class DatabaseModel {
     }
 
     public static void initializeDatabase() throws SQLException {
-        Connection connection = createConnectionMySQL();
+        connection = createConnectionMySQL();
         PreparedStatement pstm = connection.prepareStatement(sql);
 
         pstm.execute();
@@ -31,7 +35,7 @@ public class DatabaseModel {
         Statement statement = connection.createStatement();
 
         if(!tableExists(connection,"categories")) {
-            sql = "CREATE TABLE `mms`.`categories` (`idCategories` INT NOT NULL, `name` VARCHAR(45) NOT NULL, PRIMARY KEY (`idCategories`));";
+            sql = "CREATE TABLE `mms`.`categories` (`idCategories` INT NOT NULL AUTO_INCREMENT, `name` VARCHAR(45) NOT NULL, PRIMARY KEY (`idCategories`));";
             statement.executeUpdate(sql);
         }else {
             System.out.println("A tabela Categories ja existe!");
@@ -39,7 +43,7 @@ public class DatabaseModel {
 
         if(!tableExists(connection,"slots")) {
             sql = "CREATE TABLE `mms`.`slots` (" +
-                    " `idSlots` INT NOT NULL," +
+                    " `idSlots` INT NOT NULL AUTO_INCREMENT," +
                     " `Categories_idCategories` INT NOT NULL," +
                     " PRIMARY KEY (`idSlots`)," +
                     " INDEX `idCategories_idx` (`Categories_idCategories` ASC) VISIBLE," +
@@ -55,7 +59,7 @@ public class DatabaseModel {
 
         if(!tableExists(connection,"reservations")) {
             sql = "CREATE TABLE `mms`.`reservations` (" +
-                    "  `idReservations` INT NOT NULL," +
+                    "  `idReservations` INT NOT NULL AUTO_INCREMENT," +
                     "  `clientName` VARCHAR(45) NOT NULL," +
                     "  `checkInDate` DATE NOT NULL," +
                     "  `checkOutDate` DATE NOT NULL," +

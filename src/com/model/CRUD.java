@@ -15,20 +15,20 @@ public class CRUD {
         //inserir isto na bd para o create funcionar
         //INSERT INTO mms.categories(idCategories, name) VALUES(1, 'Large');
         //INSERT INTO mms.slots (idSlots, Categories_idCategories) VALUES (1, 1);
-        String sql = "INSERT INTO mms.reservations (idReservations, clientName, checkInDate, checkOutDate, bill, nif, vehicleRegistrationNumber, state, Slots_idSlots)" +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO mms.reservations (clientName, checkInDate, checkOutDate, bill, nif, vehicleRegistrationNumber, state, Slots_idSlots)" +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try {
-            pstm = (PreparedStatement) connection.prepareStatement(sql);
-            pstm.setInt(1, 2);
-            pstm.setString(2, reservation.getClientName());
-            pstm.setDate(3, reservation.getCheckInDate());
-            pstm.setDate(4, reservation.getCheckOutDate());
-            pstm.setDouble(5, reservation.getBill());
-            pstm.setInt(6, reservation.getNif());
-            pstm.setString(7, reservation.getRegNumber());
-            pstm.setInt(8, reservation.getState());
-            pstm.setInt(9, 1);
+            pstm = connection.prepareStatement(sql);
+            //pstm.setInt(1, 2);
+            pstm.setString(1, reservation.getClientName());
+            pstm.setDate(2, reservation.getCheckInDate());
+            pstm.setDate(3, reservation.getCheckOutDate());
+            pstm.setDouble(4, reservation.getBill());
+            pstm.setInt(5, reservation.getNif());
+            pstm.setString(6, reservation.getRegNumber());
+            pstm.setInt(7, reservation.getState());
+            pstm.setInt(8, 1);
             pstm.execute();
         } catch (SQLException e) {
             e.printStackTrace();
