@@ -12,7 +12,9 @@ public class Reservation {
     private String regNumber;
     private int state;
 
-    public Reservation(String clientName, Date checkInDate, Date checkOutDate, double bill, int nif, String regNumber, int state) {
+    private String category;
+
+    public Reservation(String clientName, Date checkInDate, Date checkOutDate, double bill, int nif, String regNumber, int state, String category) {
         this.clientName = clientName;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
@@ -20,6 +22,15 @@ public class Reservation {
         this.nif = nif;
         this.regNumber = regNumber;
         this.state = state;
+        this.category = category;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public int getId() {

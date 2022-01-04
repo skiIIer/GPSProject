@@ -2,15 +2,62 @@ package com.model;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseModel {
     private static Connection connection;
-    private static final String url = "jdbc:mysql://localhost:3001", user = "root", password = "espera10";
+    private static PreparedStatement pstm;
+    private static Statement stm;
+    private static ResultSet resultSet;
+    private static final String url = "jdbc:mysql://localhost:3306", user = "root", password = "root";
     private static String sql = "CREATE DATABASE IF NOT EXISTS mms";
 
     public DatabaseModel() throws SQLException {
         initializeDatabase();
+        resultSet=null;
+        pstm=null;
+        stm=null;
     }
+
+    public String verifySlot(String category, Date checkI, Date checkO){
+        List al = new ArrayList<Integer>();
+
+        String sql = "SELECT s.idSlots \n" +
+                "FROM mms.slots s\n" +
+                "INNER JOIN mms.categories c\n" +
+                "ON c.name = '" + category + "' and c.idCategories = s.Categories_idCategories;";
+
+        try {
+            stm = connection.createStatement();
+
+            resultSet = stm.executeQuery(sql);
+
+            while(resultSet.next()){
+                al.add(resultSet.getInt("idSlots"));
+            }
+
+            for(Object i: al){
+                sql = "SELECT s.idSlots \n" +
+                        "FROM mms.slots s\n" +
+                        "WHERE s.idSlots = " + i + " AND NOT EXISTS \n" +
+                        "(SELECT r.Slots_idSlots\n" +
+                        "FROM mms.reservations r\n" +
+                        "WHERE s.idSlots = r.Slots_idSlots and \n" +
+                        "((r.checkInDate > " + checkI + " or r.checkInDate < " + checkO +")" +
+                        "and (r.checkOutDate > " + checkI + " or r.checkOutDate < " + checkO + ")))";
+
+                resultSet = stm.executeQuery(sql);
+                while(resultSet.next()){
+                    System.out.println(resultSet.getInt("idSlots"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return sql;
+    }
+
+
 
     public static void addCategoriesSlots() throws SQLException {
         String auxString = null; int auxInt=0; String sql;

@@ -6,9 +6,9 @@ import java.util.ArrayList;
 
 public class Model {
     CRUD crud;
+    DatabaseModel databaseModel;
 
     public Model(){
-        DatabaseModel databaseModel;
         try {
             databaseModel = new DatabaseModel();//Initializes database
             crud = new CRUD(databaseModel.getConnection());//Initializes API for database operations
@@ -17,8 +17,9 @@ public class Model {
         }
     }
 
-    public boolean addReservation(String name, Date checkIn, Date checkOut, double bill, int nif, String regNumber, int state){
-        Reservation reservation = new Reservation(name, checkIn, checkOut, bill, nif, regNumber, state);
+    public boolean addReservation(String name, Date checkIn, Date checkOut, double bill, int nif, String regNumber, int state, String category){
+        verifySlot(category, checkIn, checkOut);
+        Reservation reservation = new Reservation(name, checkIn, checkOut, bill, nif, regNumber, state, category);
         crud.create(reservation);
         return true;
     }
@@ -34,7 +35,9 @@ public class Model {
 
 //    public String viewReservations(){}
 //    public boolean refuel(){}
-//    public String verifySlot(){}
+      public String verifySlot(String category, Date checkIn, Date checkOut){
+        return databaseModel.verifySlot(category, checkIn, checkOut);
+      }
 //    public String viewStatistics(){}
 //    public String calcMostCommonCat(){}
 //    public String calcMostActiveMonth(){}

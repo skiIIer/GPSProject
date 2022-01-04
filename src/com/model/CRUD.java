@@ -30,7 +30,7 @@ public class CRUD {
             pstm.setInt(5, reservation.getNif());
             pstm.setString(6, reservation.getRegNumber());
             pstm.setInt(7, reservation.getState());
-            pstm.setInt(8, 1);
+            pstm.setInt(8, 17);
             pstm.execute();
         } catch (SQLException e) {
             e.printStackTrace();
