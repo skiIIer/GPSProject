@@ -1,6 +1,8 @@
 package com.model;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CRUD {
     private static Connection connection;
@@ -58,4 +60,28 @@ public class CRUD {
 
         return true;
     }
+
+    /*public static ArrayList view(){
+        String sql="SELECT * FROM mms.reservations";
+        String result;
+        ArrayList<Reservation> lista= new ArrayList<Reservation>();
+
+        try {
+            pstm=connection.prepareStatement(sql);
+            ResultSet rs = pstm.executeQuery();
+            while (rs.next()) {
+
+                lista.add(new Reservation(rs.getString("clientName"),
+                        rs.getDate("checkInDate"),
+                        rs.getDate("checkOutDate"),
+                        rs.getFloat("bill"),
+                        rs.getInt("nif"),
+                        rs.getString("vehicleRegistrationNumber"),
+                        rs.getInt("state"))
+                        r);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }*/
 }

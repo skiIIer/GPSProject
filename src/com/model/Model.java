@@ -2,6 +2,7 @@ package com.model;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class Model {
     CRUD crud;
@@ -15,6 +16,7 @@ public class Model {
             e.printStackTrace();
         }
     }
+
     public boolean addReservation(String name, Date checkIn, Date checkOut, double bill, int nif, String regNumber, int state){
         Reservation reservation = new Reservation(name, checkIn, checkOut, bill, nif, regNumber, state);
         crud.create(reservation);

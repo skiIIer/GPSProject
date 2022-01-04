@@ -10,6 +10,32 @@ public class Main {
     private static Model model;
     private static Scanner scanner=new Scanner(System.in);
 
+    public static void Interface_ReservationsSubmenu(){
+        int option;
+
+        while (true){
+            System.out.println("---------------------------------------------------------------------\n" +
+                    "MMS / Reservations\n" +
+                    "---------------------------------------------------------------------");
+            System.out.println("Choose an option:\n\t1-Add Reservation\n\t2-View Reservations\n\t3-Quit");
+            System.out.print("Option:");
+            while (!scanner.hasNextInt()) scanner.next();
+            option = scanner.nextInt();
+            switch (option){
+                case 1:
+                    System.out.println("Add Reservations!!");
+                    break;
+                case 2:
+                    System.out.println("View Reservations!!");
+                    break;
+                case 3:
+                    return;
+                default:
+                    System.out.println(option + " is not recognized as a command\n\n");
+            }
+        }
+    }
+
     public static void Interface(){
         int option;
 
@@ -23,7 +49,7 @@ public class Main {
             option = scanner.nextInt();
             switch (option){
                 case 1:
-                    System.out.println("Reservations Submenu!!");
+                    Interface_ReservationsSubmenu();
                     break;
                 case 2:
                     System.out.println("Refuel!!");
