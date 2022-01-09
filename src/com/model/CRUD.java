@@ -118,6 +118,24 @@ public class CRUD {
         return lista;
     }
 
+    public static boolean update(int id, int fuelInEuros){
+        String sql = "UPDATE mms.reservations " +
+                "SET bill = bill + ? " +
+                "WHERE idReservations = id";
+
+        try {
+            pstm = connection.prepareStatement(sql);
+            pstm.setInt(1, fuelInEuros);
+            pstm.setInt(2, id);
+
+            if (!pstm.execute())
+                return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     public static boolean edit(Reservation reservation){
         String sql = "UPDATE mms.reservations " +
                 "SET clientName=?, checkInDate=?, checkOutDate=?, nif=?, vehicleRegistrationNumber=?" +

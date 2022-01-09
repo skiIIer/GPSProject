@@ -112,7 +112,13 @@ public class Model {
     }
 
 //    public String viewReservations(){}
-//    public boolean refuel(){}
+      public boolean refuel(String VRN, int fuelInEuros){
+        int id = DatabaseModel.getIdReservation(VRN);
+        if(id!=0)
+            return CRUD.update(id, fuelInEuros);
+        return false;
+      }
+
       public int verifySlot(String category, Date checkIn, Date checkOut){
         return databaseModel.verifySlot(category, checkIn, checkOut);
       }
