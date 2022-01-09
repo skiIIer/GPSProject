@@ -5,7 +5,9 @@ import com.model.Reservation;
 
 import java.sql.*;
 import java.sql.Connection;
-import java.util.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 public class Main {
@@ -46,7 +48,6 @@ public class Main {
                             break;
                         }
                     }
-
 
                     while (true) {
                         System.out.println("Check-Out:");
@@ -94,6 +95,12 @@ public class Main {
                         if(model.verifyVRN(vrn))
                             break;
                     }
+
+                    //Adds
+                    if(model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-11-31"), 15.2, 234124721, "AS-27-SD", 2, "Large"))
+                        System.out.println("Reservation successfully made.");
+                    else
+                        System.out.println("\nNo slots available for the specified date.");
 
                     break;
                 case 2:

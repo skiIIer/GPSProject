@@ -17,9 +17,9 @@ public class CRUD {
         pstm = null;
     }
 
-    public static void create(Reservation reservation){
-        String sql = "INSERT INTO mms.reservations (clientName, checkInDate, checkOutDate, bill, nif, vehicleRegistrationNumber, state, Slots_idSlots)" +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    public static void create(Reservation reservation, int availableSlot){
+        String sql = "INSERT INTO mms.reservations (clientName, checkInDate, checkOutDate, bill, nif, vehicleRegistrationNumber, state, category, Slots_idSlots)" +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try {
             pstm = connection.prepareStatement(sql);
@@ -31,7 +31,8 @@ public class CRUD {
             pstm.setInt(5, reservation.getNif());
             pstm.setString(6, reservation.getRegNumber());
             pstm.setInt(7, reservation.getState());
-            pstm.setInt(8, availableSlot);
+            pstm.setString(8, reservation.getCategory());
+            pstm.setInt(9, availableSlot);
             pstm.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -105,7 +106,8 @@ public class CRUD {
                         rs.getFloat("bill"),
                         rs.getInt("nif"),
                         rs.getString("vehicleRegistrationNumber"),
-                        rs.getInt("state"));
+                        rs.getInt("state"),
+                        rs.getString("category"));
                 reservation.setId(rs.getInt("idReservations"));
 
                 lista.add(reservation);
@@ -156,7 +158,8 @@ public class CRUD {
                     rs.getFloat("bill"),
                     rs.getInt("nif"),
                     rs.getString("vehicleRegistrationNumber"),
-                    rs.getInt("state"));
+                    rs.getInt("state"),
+                    rs.getString("category"));
             reservation.setId(rs.getInt("idReservations"));
 
         }

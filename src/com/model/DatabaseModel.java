@@ -144,6 +144,7 @@ public class DatabaseModel {
                     "  `nif` INT NOT NULL," +
                     "  `vehicleRegistrationNumber` VARCHAR(45) NOT NULL," +
                     "  `state` INT NOT NULL," +
+                    "  `category` VARCHAR(45) NOT NULL," +
                     "  `Slots_idSlots` INT NOT NULL," +
                     "  PRIMARY KEY (`idReservations`)," +
                     "  INDEX `idSlots_idx` (`Slots_idSlots` ASC) VISIBLE," +
