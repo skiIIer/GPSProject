@@ -3,6 +3,7 @@ package com.model;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -117,9 +118,46 @@ public class Model {
         return databaseModel.verifySlot(category, checkIn, checkOut);
       }
 
-//    public String viewStatistics(){}
-//    public String calcMostCommonCat(){}
-//    public String calcMostActiveMonth(){}
-//    public String calcIncome(){}
-//    public String calcMostProfitMonth(){}
+    public String viewStatistics(int year){
+        String result = year + " Statistics:\n";
+
+        result += calcMostCommonCat(year);
+        result +=calcMostActiveMonth(year);
+        result += "\t-> Marina's Economic Results:\n";
+        result += calcIncome(year);
+        result += calcMostProfitMonth(year);
+
+
+        return result;
+    }
+    public String calcMostCommonCat(int year){
+        String result = "\t-> Most common vehicle category: ";
+
+        result += crud.mostCommonCat(year) + "\n";
+
+        return result;
+    }
+    public String calcMostActiveMonth(int year){
+        String result = "\t-> Most Active Month: ";
+
+        result += crud.mostActiveMonth(year) + "\n";
+
+        return result;
+    }
+    public String calcIncome(int year){
+        DecimalFormat df = new DecimalFormat("0.00");
+
+        String result = "\t\t\tAnnual Income: ";
+        double annualIncome = crud.viewAnnualIncome(year);
+        if(annualIncome==-1)
+            result += "No Information Available\n";
+        else
+            result += df.format(annualIncome) + " $\n";
+
+        return result;
+    }
+
+    public String calcMostProfitMonth(int year){
+        return "\t\t\tMost profitable month: " + crud.viewMostProfitableMonth(year) + "\n";
+    }
 }
