@@ -4,9 +4,9 @@ import java.sql.*;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Date;
-import java.util.List;
+import java.text.DateFormatSymbols;
 
 public class CRUD {
     private static Connection connection;
@@ -118,6 +118,49 @@ public class CRUD {
         return lista;
     }
 
+    public static double viewAnnualIncome(int year){
+        String sql="SELECT SUM(bill) as totalIncome FROM mms.reservations WHERE YEAR(checkOutDate) = ?";
+
+        try {
+            pstm = connection.prepareStatement(sql);
+            pstm.setInt(1,year);
+            ResultSet rs = pstm.executeQuery();
+            if(rs.next()){
+                return rs.getFloat("totalIncome");
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public String viewMostProfitableMonth(int year) {
+        int month;
+        double profit;
+        String sql="SELECT MONTH(checkOutDate) as month, SUM(bill) as totalIncome FROM mms.reservations WHERE YEAR(checkOutDate) = ? GROUP BY month ORDER BY totalIncome DESC";
+
+        try {
+            pstm = connection.prepareStatement(sql);
+            pstm.setInt(1,year);
+            ResultSet rs = pstm.executeQuery();
+            if(rs.next()){
+                month = rs.getInt("month");
+                profit = rs.getFloat("totalIncome");
+                var mCalendar = Calendar.getInstance();
+
+                Calendar c = Calendar.getInstance();
+                c.set(Calendar.MONTH, month - 1);
+                c.set(Calendar.DAY_OF_MONTH, 1);
+                String monthName = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+
+                return monthName.substring(0, 1).toUpperCase() + monthName.substring(1) + " (" + profit + " $)";
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return "No Information Available";
+    }
+
     public static boolean edit(Reservation reservation){
         String sql = "UPDATE mms.reservations " +
                 "SET clientName=?, checkInDate=?, checkOutDate=?, nif=?, vehicleRegistrationNumber=?" +
@@ -169,4 +212,5 @@ public class CRUD {
 
         return reservation;
     }
+
 }

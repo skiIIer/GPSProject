@@ -3,6 +3,7 @@ package com.model;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -117,9 +118,30 @@ public class Model {
         return databaseModel.verifySlot(category, checkIn, checkOut);
       }
 
-//    public String viewStatistics(){}
+    public String viewStatistics(int year){
+        String result = "";
+
+        result += calcIncome(year);
+        result += calcMostProfitMonth(year);
+
+        return result;
+    }
 //    public String calcMostCommonCat(){}
 //    public String calcMostActiveMonth(){}
-//    public String calcIncome(){}
-//    public String calcMostProfitMonth(){}
+    public String calcIncome(int year){
+        DecimalFormat df = new DecimalFormat("0.00");
+
+        String result = "Annual Income: ";
+        double annualIncome = crud.viewAnnualIncome(year);
+        if(annualIncome==-1)
+            result += "No Information Available\n";
+        else
+            result += df.format(annualIncome) + " $\n";
+
+        return result;
+    }
+
+    public String calcMostProfitMonth(int year){
+        return "Most profitable month: " + crud.viewMostProfitableMonth(year);
+    }
 }
