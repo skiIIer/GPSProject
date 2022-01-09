@@ -119,30 +119,35 @@ public class Model {
       }
 
     public String viewStatistics(int year){
-        String result = "";
+        String result = year + " Statistics:\n";
 
+        result += calcMostCommonCat(year);
+        result +=calcMostActiveMonth(year);
+        result += "\t-> Marina's Economic Results:\n";
         result += calcIncome(year);
         result += calcMostProfitMonth(year);
-        result += calcMostCommonCat(year);
+
 
         return result;
     }
     public String calcMostCommonCat(int year){
-        String result = "Most common vehicle category: ";
+        String result = "\t-> Most common vehicle category: ";
 
-        result += crud.mostCommonCat(year);
+        result += crud.mostCommonCat(year) + "\n";
 
         return result;
     }
-    public String calcMostActiveMonth(){
-        String result = "";
+    public String calcMostActiveMonth(int year){
+        String result = "\t-> Most Active Month: ";
+
+        result += crud.mostActiveMonth(year) + "\n";
 
         return result;
     }
     public String calcIncome(int year){
         DecimalFormat df = new DecimalFormat("0.00");
 
-        String result = "Annual Income: ";
+        String result = "\t\t\tAnnual Income: ";
         double annualIncome = crud.viewAnnualIncome(year);
         if(annualIncome==-1)
             result += "No Information Available\n";
@@ -153,6 +158,6 @@ public class Model {
     }
 
     public String calcMostProfitMonth(int year){
-        return "Most profitable month: " + crud.viewMostProfitableMonth(year) + "\n";
+        return "\t\t\tMost profitable month: " + crud.viewMostProfitableMonth(year) + "\n";
     }
 }

@@ -188,6 +188,42 @@ public class CRUD {
         return -1;
     }
 
+    public String mostActiveMonth(int year){
+        String result = "";
+        String monthName;
+        String sql = "SELECT MONTH(checkOutDate) as month, COUNT(idReservations) as reservations FROM mms.reservations " +
+                "WHERE YEAR(checkOutDate) = ? GROUP BY month ORDER BY reservations desc;";
+        int month, flag=0, count, lastCount=0;
+        Calendar c = Calendar.getInstance();
+
+        try {
+            pstm = connection.prepareStatement(sql);
+            pstm.setInt(1,year);
+            ResultSet rs = pstm.executeQuery();
+
+            while(rs.next()){
+                month = rs.getInt("month");
+                count = rs.getInt("reservations");
+
+                if((flag==0 || lastCount==count) && !rs.isLast()) {
+                    c.set(Calendar.MONTH, month - 1);
+                    c.set(Calendar.DAY_OF_MONTH, 1);
+                    monthName = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+
+                    result += monthName.substring(0, 1).toUpperCase() + monthName.substring(1) + " (" + count + " Reservations) ";
+                    lastCount = count;
+                }else{
+                    return result;
+                }
+                if(flag==0)
+                    flag=1;
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return "No Information Available";
+    }
+
     public String viewMostProfitableMonth(int year) {
         int month, flag=0;
         double profit, lastProfit=0;
@@ -204,7 +240,7 @@ public class CRUD {
                 month = rs.getInt("month");
                 profit = rs.getFloat("totalIncome");
 
-                if(flag==0 || lastProfit==profit || !rs.isLast()) {
+                if((flag==0 || lastProfit==profit) && !rs.isLast()) {
                     c.set(Calendar.MONTH, month - 1);
                     c.set(Calendar.DAY_OF_MONTH, 1);
                     monthName = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());

@@ -151,14 +151,14 @@ public class Main {
             System.out.println("Reservation successfully made.");
         else
             System.out.println("\nNo slots available for the specified date.");
-        model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-11-30"), 15, 234124721, "AS-27-SD", 2, "Small");
-        model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-10-11"), 15, 234124721, "AS-27-SD", 2, "Medium");
-        model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-9-11"), 15, 234124721, "AS-27-SD", 2, "Medium");
-        model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-8-23"), 15, 234124721, "AS-27-SD", 2, "Large");
-        model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-7-23"), 15, 234124721, "AS-27-SD", 2, "Small");
-        //model.addReservation("To Manel", Date.valueOf("2027-03-01"), Date.valueOf("2029-11-31"), 15.2, 234124721, "AS-27-SD", 2, "Medium");
 
-        //model.addReservation("Bob", Date.valueOf("2022-04-23"), Date.valueOf("2023-02-12"), 15.2, 521124721, "SA-27-SD", 2);
+         */
+        //model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-11-30"), 15, 234124721, "AS-27-SD", 2, "Small");
+        //model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-10-11"), 15, 234124721, "AS-27-SD", 2, "Medium");
+        //model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-9-11"), 15, 234124721, "AS-27-SD", 2, "Medium");
+        //model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-8-23"), 15, 234124721, "AS-27-SD", 2, "Large");
+        //model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-7-23"), 15, 234124721, "AS-27-SD", 2, "Small");
+
         //System.out.print(model.cancelReservation(6));
 
         System.out.println(model.viewStatistics(2030));
