@@ -135,25 +135,32 @@ public class CRUD {
     }
 
     public String viewMostProfitableMonth(int year) {
-        int month;
-        double profit;
+        int month, flag=0;
+        double profit, lastProfit=0;
+        String result="", monthName;
         String sql="SELECT MONTH(checkOutDate) as month, SUM(bill) as totalIncome FROM mms.reservations WHERE YEAR(checkOutDate) = ? GROUP BY month ORDER BY totalIncome DESC";
+        Calendar c = Calendar.getInstance();
 
         try {
             pstm = connection.prepareStatement(sql);
             pstm.setInt(1,year);
             ResultSet rs = pstm.executeQuery();
-            if(rs.next()){
+            while(rs.next()){
                 month = rs.getInt("month");
                 profit = rs.getFloat("totalIncome");
-                var mCalendar = Calendar.getInstance();
 
-                Calendar c = Calendar.getInstance();
-                c.set(Calendar.MONTH, month - 1);
-                c.set(Calendar.DAY_OF_MONTH, 1);
-                String monthName = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+                if(flag==0 || lastProfit==profit) {
+                    c.set(Calendar.MONTH, month - 1);
+                    c.set(Calendar.DAY_OF_MONTH, 1);
+                    monthName = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
 
-                return monthName.substring(0, 1).toUpperCase() + monthName.substring(1) + " (" + profit + " $)";
+                    result += monthName.substring(0, 1).toUpperCase() + monthName.substring(1) + " (" + profit + " $) ";
+                    lastProfit = profit;
+                }else{
+                    return result;
+                }
+                if(flag==0)
+                    flag=1;
             }
         } catch (SQLException e){
             e.printStackTrace();
