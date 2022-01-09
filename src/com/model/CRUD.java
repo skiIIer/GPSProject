@@ -149,7 +149,7 @@ public class CRUD {
                 month = rs.getInt("month");
                 profit = rs.getFloat("totalIncome");
 
-                if(flag==0 || lastProfit==profit) {
+                if(flag==0 || lastProfit==profit || !rs.isLast()) {
                     c.set(Calendar.MONTH, month - 1);
                     c.set(Calendar.DAY_OF_MONTH, 1);
                     monthName = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
