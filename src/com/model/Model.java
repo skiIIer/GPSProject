@@ -123,11 +123,22 @@ public class Model {
 
         result += calcIncome(year);
         result += calcMostProfitMonth(year);
+        result += calcMostCommonCat(year);
 
         return result;
     }
-//    public String calcMostCommonCat(){}
-//    public String calcMostActiveMonth(){}
+    public String calcMostCommonCat(int year){
+        String result = "Most common vehicle category: ";
+
+        result += crud.mostCommonCat(year);
+
+        return result;
+    }
+    public String calcMostActiveMonth(){
+        String result = "";
+
+        return result;
+    }
     public String calcIncome(int year){
         DecimalFormat df = new DecimalFormat("0.00");
 
@@ -142,6 +153,6 @@ public class Model {
     }
 
     public String calcMostProfitMonth(int year){
-        return "Most profitable month: " + crud.viewMostProfitableMonth(year);
+        return "Most profitable month: " + crud.viewMostProfitableMonth(year) + "\n";
     }
 }

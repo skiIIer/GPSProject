@@ -118,6 +118,60 @@ public class CRUD {
         return lista;
     }
 
+    public String mostCommonCat(int year) {
+        int large = 0, medium = 0, small = 0;
+        String result = "";
+        String sql = "SELECT COUNT(category) AS x FROM mms.reservations WHERE category = ? AND year(checkOutDate) = ?;";
+        ResultSet rs;
+
+        try {
+            pstm=connection.prepareStatement(sql);
+
+            pstm.setString(1,"Large");
+            pstm.setInt(2,year);
+            rs = pstm.executeQuery();
+            if (!rs.next())
+                return "Error";
+            large = rs.getInt("x");
+
+            pstm.setString(1, "Medium");
+            pstm.setInt(2,year);
+            rs = pstm.executeQuery();
+            if (!rs.next())
+                return "Error";
+            medium = rs.getInt("x");
+
+            pstm.setString(1,"Small");
+            pstm.setInt(2,year);
+            rs = pstm.executeQuery();
+            if (!rs.next())
+                return "Error";
+            small = rs.getInt("x");
+
+            if (large == 0 && medium == 0 && small == 0){
+                result = "No Information Available";
+                return result;
+            }
+
+
+            if(large > medium && large > small)
+            {
+                result = "Large (" + String.valueOf(large) + " vehicles)";
+            }
+            else
+            if(medium > small){
+                result = "Medium (" + String.valueOf(medium) + " vehicles)";
+            }
+            else{
+                result = "Small (" + String.valueOf(small) + " vehicles)";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
     public static double viewAnnualIncome(int year){
         String sql="SELECT SUM(bill) as totalIncome FROM mms.reservations WHERE YEAR(checkOutDate) = ?";
 
@@ -145,6 +199,7 @@ public class CRUD {
             pstm = connection.prepareStatement(sql);
             pstm.setInt(1,year);
             ResultSet rs = pstm.executeQuery();
+
             while(rs.next()){
                 month = rs.getInt("month");
                 profit = rs.getFloat("totalIncome");
@@ -219,5 +274,6 @@ public class CRUD {
 
         return reservation;
     }
+
 
 }

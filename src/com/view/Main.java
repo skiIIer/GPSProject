@@ -146,6 +146,7 @@ public class Main {
 
     public static void main(String[] args) {
         model = new Model();
+        /*
         if(model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-11-31"), 15, 234124721, "AS-27-SD", 2, "Large"))
             System.out.println("Reservation successfully made.");
         else
