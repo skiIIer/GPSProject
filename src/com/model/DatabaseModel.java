@@ -217,7 +217,7 @@ public class DatabaseModel {
                     "    ON UPDATE NO ACTION);";
             statement.executeUpdate(sql);
         }else {
-            System.out.println("A tabela Reservations ja existe!");
+            System.out.println("A tabela Reservations ja existe!\n");
         }
 
         addCategoriesSlots();

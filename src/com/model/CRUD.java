@@ -4,9 +4,9 @@ import java.sql.*;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Date;
-import java.util.List;
+import java.text.DateFormatSymbols;
 
 public class CRUD {
     private static Connection connection;
@@ -136,6 +136,147 @@ public class CRUD {
         return true;
     }
 
+    public String mostCommonCat(int year) {
+        int large = 0, medium = 0, small = 0;
+        String result = "";
+        String sql = "SELECT COUNT(category) AS x FROM mms.reservations WHERE category = ? AND year(checkOutDate) = ?;";
+        ResultSet rs;
+
+        try {
+            pstm=connection.prepareStatement(sql);
+
+            pstm.setString(1,"Large");
+            pstm.setInt(2,year);
+            rs = pstm.executeQuery();
+            if (!rs.next())
+                return "Error";
+            large = rs.getInt("x");
+
+            pstm.setString(1, "Medium");
+            pstm.setInt(2,year);
+            rs = pstm.executeQuery();
+            if (!rs.next())
+                return "Error";
+            medium = rs.getInt("x");
+
+            pstm.setString(1,"Small");
+            pstm.setInt(2,year);
+            rs = pstm.executeQuery();
+            if (!rs.next())
+                return "Error";
+            small = rs.getInt("x");
+
+            if (large == 0 && medium == 0 && small == 0){
+                result = "No Information Available";
+                return result;
+            }
+
+
+            if(large > medium && large > small)
+            {
+                result = "Large (" + String.valueOf(large) + " vehicles)";
+            }
+            else
+            if(medium > small){
+                result = "Medium (" + String.valueOf(medium) + " vehicles)";
+            }
+            else{
+                result = "Small (" + String.valueOf(small) + " vehicles)";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public static double viewAnnualIncome(int year){
+        String sql="SELECT SUM(bill) as totalIncome FROM mms.reservations WHERE YEAR(checkOutDate) = ?";
+
+        try {
+            pstm = connection.prepareStatement(sql);
+            pstm.setInt(1,year);
+            ResultSet rs = pstm.executeQuery();
+            if(rs.next()){
+                return rs.getFloat("totalIncome");
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public String mostActiveMonth(int year){
+        String result = "";
+        String monthName;
+        String sql = "SELECT MONTH(checkOutDate) as month, COUNT(idReservations) as reservations FROM mms.reservations " +
+                "WHERE YEAR(checkOutDate) = ? GROUP BY month ORDER BY reservations desc;";
+        int month, flag=0, count, lastCount=0;
+        Calendar c = Calendar.getInstance();
+
+        try {
+            pstm = connection.prepareStatement(sql);
+            pstm.setInt(1,year);
+            ResultSet rs = pstm.executeQuery();
+
+            while(rs.next()){
+                month = rs.getInt("month");
+                count = rs.getInt("reservations");
+
+                if((flag==0 || lastCount==count) && !rs.isLast()) {
+                    c.set(Calendar.MONTH, month - 1);
+                    c.set(Calendar.DAY_OF_MONTH, 1);
+                    monthName = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+
+                    result += monthName.substring(0, 1).toUpperCase() + monthName.substring(1) + " (" + count + " Reservations) ";
+                    lastCount = count;
+                }else{
+                    return result;
+                }
+                if(flag==0)
+                    flag=1;
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return "No Information Available";
+    }
+
+    public String viewMostProfitableMonth(int year) {
+        int month, flag=0;
+        double profit, lastProfit=0;
+        String result="", monthName;
+        String sql="SELECT MONTH(checkOutDate) as month, SUM(bill) as totalIncome FROM mms.reservations WHERE YEAR(checkOutDate) = ? GROUP BY month ORDER BY totalIncome DESC";
+        Calendar c = Calendar.getInstance();
+
+        try {
+            pstm = connection.prepareStatement(sql);
+            pstm.setInt(1,year);
+            ResultSet rs = pstm.executeQuery();
+
+            while(rs.next()){
+                month = rs.getInt("month");
+                profit = rs.getFloat("totalIncome");
+
+                if((flag==0 || lastProfit==profit) && !rs.isLast()) {
+                    c.set(Calendar.MONTH, month - 1);
+                    c.set(Calendar.DAY_OF_MONTH, 1);
+                    monthName = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+
+                    result += monthName.substring(0, 1).toUpperCase() + monthName.substring(1) + " (" + profit + " $) ";
+                    lastProfit = profit;
+                }else{
+                    return result;
+                }
+                if(flag==0)
+                    flag=1;
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return "No Information Available";
+    }
+
     public static boolean edit(Reservation reservation){
         String sql = "UPDATE mms.reservations " +
                 "SET clientName=?, checkInDate=?, checkOutDate=?, nif=?, vehicleRegistrationNumber=?" +
@@ -187,4 +328,6 @@ public class CRUD {
 
         return reservation;
     }
+
+
 }
