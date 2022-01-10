@@ -108,6 +108,13 @@ public class Model {
         return vrn.matches("^[a-zA-Z]{2}-[0-9]{4}-[a-zA-z]{2}$");
     }
 
+    public boolean verifyYear(int year){
+        int yearNow = Calendar.getInstance().get(Calendar.YEAR);
+        if(/*yearNow<year ||*/ 1500>year)
+            return false;
+        return true;
+    }
+
     public boolean cancelReservation(int id){
         return crud.delete(id);
     }
