@@ -146,7 +146,7 @@ public class Main {
 
     public static void main(String[] args) {
         model = new Model();
-        if(model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-11-31"), 15.2, 234124721, "AS-27-SD", 2, "Large"))
+        if(model.addReservation("Rui Pinto", Date.valueOf("2019-03-01"), Date.valueOf("2022-11-31"), 3, 987654321, "AP-27-SD", 2, "Large"))
             System.out.println("Reservation successfully made.");
         else
             System.out.println("\nNo slots available for the specified date.");
@@ -155,7 +155,7 @@ public class Main {
         //model.addReservation("Bob", Date.valueOf("2022-04-23"), Date.valueOf("2023-02-12"), 15.2, 521124721, "SA-27-SD", 2);
         System.out.print(model.cancelReservation(6));
 
-        Interface();
+        //Interface();
         return;
     }
 }

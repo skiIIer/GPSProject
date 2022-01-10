@@ -19,6 +19,25 @@ public class DatabaseModel {
         stm=null;
     }
 
+    public static int getIdReservation(String VRN){
+        String sql = "SELECT r.idReservations\n" +
+                "FROM mms.reservations r \n" +
+                "WHERE r.vehicleRegistrationNumber = '" + VRN +"';";
+
+        try {
+            stm = connection.createStatement();
+
+            resultSet = stm.executeQuery(sql);
+            if(!resultSet.next())
+                return 0;
+            return resultSet.getInt("idReservations");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public int verifySlot(String category, Date checkI, Date checkO){
         List al = new ArrayList<Integer>();
 
@@ -160,4 +179,6 @@ public class DatabaseModel {
 
         addCategoriesSlots();
     }
+
+
 }
