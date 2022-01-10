@@ -19,6 +19,43 @@ public class DatabaseModel {
         stm=null;
     }
 
+    public static int calcBill(int id){
+        int bill = getBill(id);
+        String sql = "SELECT c.basePrice\n" +
+                "FROM mms.categories c \n" +
+                "INNER JOIN mms.reservations r \n" +
+                "ON c.name = r.category " +
+                "AND r.idReservations = "+id;
+
+        try {
+            resultSet = stm.executeQuery(sql);
+            if(!resultSet.next())
+                return 0;
+            return resultSet.getInt("basePrice") * bill;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static int getBill(int id){
+        String sql = "SELECT r.bill" +
+                "FROM mms.reservations r" +
+                "WHERE r.idReservations = " + id + ";";
+
+        try {
+            stm = connection.createStatement();
+
+            resultSet = stm.executeQuery(sql);
+            if(!resultSet.next())
+                return 0;
+            return resultSet.getInt("bill");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public static int getIdReservation(String VRN){
         String sql = "SELECT r.idReservations\n" +
                 "FROM mms.reservations r \n" +
@@ -79,19 +116,21 @@ public class DatabaseModel {
 
 
     public static void addCategoriesSlots() throws SQLException {
-        String auxString = null; int auxInt=0; String sql;
+        String auxString = null;
+        int auxInt=0, auxIntBasePrice=0;
+        String sql;
         int cont=0;
         Statement stm = connection.createStatement();
         ResultSet rs;
 
         for(int i=0; i<3; i++){
-            if(i==0){ auxInt=15; auxString="Small";}
-            if(i==1){ auxInt=5; auxString="Medium";}
-            if(i==2){ auxInt=2; auxString="Large";}
+            if(i==0){ auxInt=15; auxString="Small"; auxIntBasePrice=100;}
+            if(i==1){ auxInt=5; auxString="Medium"; auxIntBasePrice=200;}
+            if(i==2){ auxInt=2; auxString="Large"; auxIntBasePrice=300;}
             sql = "SELECT * FROM mms.categories WHERE idCategories=" + (i+1);
             rs = stm.executeQuery(sql);
             if(!rs.next()) {
-                sql = "INSERT INTO mms.categories (name) VALUES ('" + auxString + "'); ";
+                sql = "INSERT INTO mms.categories (name, basePrice) VALUES ('" + auxString + "', " + auxIntBasePrice + "); ";
                 stm.executeUpdate(sql);
             }
             for(int j=0; j<auxInt; j++){
@@ -130,7 +169,11 @@ public class DatabaseModel {
         Statement statement = connection.createStatement();
 
         if(!tableExists(connection,"categories")) {
-            sql = "CREATE TABLE `mms`.`categories` (`idCategories` INT NOT NULL AUTO_INCREMENT, `name` VARCHAR(45) NOT NULL, PRIMARY KEY (`idCategories`));";
+            sql = "CREATE TABLE `mms`.`categories` (" +
+                    " `idCategories` INT NOT NULL AUTO_INCREMENT, " +
+                    " `name` VARCHAR(45) NOT NULL, " +
+                    " `basePrice` FLOAT NOT NULL, " +
+                    " PRIMARY KEY (`idCategories`));";
             statement.executeUpdate(sql);
         }else {
             System.out.println("A tabela Categories ja existe!");
