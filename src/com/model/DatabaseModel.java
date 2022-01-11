@@ -108,13 +108,6 @@ public class DatabaseModel {
                 "((r.checkInDate >= '" + checkI + "' and r.checkInDate <= '"+ checkO + "') \n" +
                 "or (r.checkOutDate >= '" + checkI + "' and r.checkOutDate <= '" + checkO + "')));";
 
-        /*List al = new ArrayList<Integer>();
-
-        String sql = "SELECT s.idSlots \n" +
-                "FROM mms.slots s\n" +
-                "INNER JOIN mms.categories c\n" +
-                "ON c.name = '" + category + "' and c.idCategories = s.Categories_idCategories;";*/
-
         try {
             stm = connection.createStatement();
 
@@ -123,22 +116,6 @@ public class DatabaseModel {
             while(resultSet.next()){
                 return resultSet.getInt("idSlots");
             }
-/*
-            for(Object i: al){
-                sql = "SELECT s.idSlots \n" +
-                        "FROM mms.slots s\n" +
-                        "WHERE s.idSlots = " + i + " AND NOT EXISTS \n" +
-                        "(SELECT r.Slots_idSlots\n" +
-                        "FROM mms.reservations r\n" +
-                        "WHERE s.idSlots = r.Slots_idSlots and \n" +
-                        "((r.checkInDate > " + checkI + " or r.checkInDate < " + checkO +")" +
-                        "and (r.checkOutDate > " + checkI + " or r.checkOutDate < " + checkO + ")))";
-
-                resultSet = stm.executeQuery(sql);
-                while(resultSet.next()){
-                    return resultSet.getInt("idSlots");
-                }
-            }*/
         } catch (SQLException e) {
             e.printStackTrace();
         }
