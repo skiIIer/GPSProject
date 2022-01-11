@@ -194,4 +194,8 @@ public class Model {
     public String calcMostProfitMonth(int year){
         return "\t\t\tMost profitable month: " + crud.viewMostProfitableMonth(year) + "\n";
     }
+
+    public ArrayList viewReservationByState(State state){
+        return crud.viewReservationByState(state);
+    }
 }
