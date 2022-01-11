@@ -116,8 +116,7 @@ public class Model {
 
     public boolean verifyYear(int year){
         int yearNow = Calendar.getInstance().get(Calendar.YEAR);
-        /*yearNow<year ||*/
-        return 1500 <= year;
+        return 1 <= year && year <= yearNow;
     }
 
     public boolean cancelReservation(int id){

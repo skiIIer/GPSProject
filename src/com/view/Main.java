@@ -1,18 +1,15 @@
 package com.view;
 
 import com.model.Model;
+import com.model.Reservation;
 import com.model.State;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Date;
-import java.sql.*;
-import java.sql.Connection;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
@@ -100,7 +97,7 @@ public class Main {
                         }
                     }
                     else{
-                        System.out.println("Data invalida");
+                        System.out.println("Invalid date");
                         break;
                     }
 
@@ -231,7 +228,6 @@ public class Main {
 
         while (true) {
             System.out.print("Name: ");
-            while (!scanner.hasNext()) scanner.next();
             name = scanner.nextLine();
             if (name.compareToIgnoreCase("quit") == 0)
                 return;
@@ -270,7 +266,7 @@ public class Main {
         }
 
         //Adds
-        if (model.addReservation(name, Date.valueOf(dayCI + "-" + monthCI + "-" + yearCI), Date.valueOf(dayCO + "-" + monthCO + "-" + yearCO), 0, nif, vrn, State.SCHEDULED.getValue(), category))
+        if (model.addReservation(name, Date.valueOf(yearCI + "-" + monthCI + "-" + dayCI), Date.valueOf(yearCO + "-" + monthCO + "-" + dayCO), 0, nif, vrn, State.SCHEDULED.getValue(), category))
             System.out.println("Reservation successfully made.");
         else
             System.out.println("\nNo slots available for the specified date.");
@@ -314,7 +310,7 @@ public class Main {
                 } else if (cmd.compareToIgnoreCase("edit") == 0) {
                     if (isNumeric(value)) {
                         val = Integer.parseInt(value);
-                        //CHAMA FUNCAO DA INTERFACE DO EDIT
+                        Interface_EditReservations(val);
                     } else
                         System.out.println("Please insert a valid id");
 
@@ -371,10 +367,12 @@ public class Main {
                     "---------------------------------------------------------------------");
             System.out.println("Choose the year to consult its statistics or quit by typing 'quit'");
             System.out.print("Command: ");
-            while (!scanner.hasNextInt()) scanner.next();
-            year = scanner.nextInt();
+
+            year = scanInt();
             System.out.println("---------------------------------------------------------------------");
-            if (model.verifyYear(year))
+            if(year == -1)
+                break;
+            else if (model.verifyYear(year))
                 System.out.println(model.viewStatistics(year));
             else
                 System.out.println("Choose a valid year or quit by typing 'quit'");
