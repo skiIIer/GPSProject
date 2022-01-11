@@ -7,6 +7,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Date;
+import java.sql.*;
+import java.sql.Connection;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
@@ -41,8 +47,141 @@ public class Main {
             }
         }
     }
+    public static void Interface_EditReservations(int id){
+        String command;
+        Reservation aux;
+        int dayCI, monthCI, yearCI, auxInt, flag=0, dayCO, monthCO, yearCO;
+        String dateCheckIn = null, dateCheckOut, auxStr;
+        boolean COafterCI=false;
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        System.out.println("---------------------------------------------------------------------\n" +
+                "MMS / Reservations / Edit\n" +
+                "---------------------------------------------------------------------");
+        aux = model.getReservation(id);
+        if(aux==null){
+            System.out.println("Error selecting a Reservation");
+            return;
+        }
+        System.out.println(model.showDetails(aux));
+        System.out.println("Choose the field to edit, 'help' to check available commands or quit by typing 'quit'");
+        System.out.print("Command: ");
+        command = scanner.next();
+        while(!command.equalsIgnoreCase("quit")){
+            flag=0;
+            switch (command){
+                case "name":
+                    System.out.print("Name: ");
+                    aux.setClientName(scanner.next());
+                    break;
+                case "check-in":
+                    System.out.println("Check-In:");
+                    System.out.print("\tDay: ");
+                    dayCI = scanInt();
+                    if(dayCI==-1)
+                        return;
+                    System.out.print("\tMonth: ");
+                    monthCI = scanInt();
+                    if(monthCI==-1)
+                        return;
+                    System.out.print("\tYear: ");
+                    yearCI = scanInt();
+                    if(yearCI==-1)
+                        return;
+                    if (model.verifyDateCI(dayCI, monthCI, yearCI)) {
+                        dateCheckIn = yearCI+"-"+monthCI+"-"+dayCI;
 
-    public static void Interface_AddReservations() {
+                        if(Date.valueOf(dateCheckIn).before(aux.getCheckOutDate())){
+                            aux.setCheckInDate(Date.valueOf(dateCheckIn));
+                            break;
+                        }
+                        else{
+                            System.out.println("Check-out Date must be after Check-In Date");
+                            COafterCI = true;
+                        }
+                    }
+                    else{
+                        System.out.println("Data invalida");
+                        break;
+                    }
+
+                case "check-out":
+                    System.out.println("Check-Out:");
+                    System.out.print("\tDay: ");
+                    dayCO = scanInt();
+                    if(dayCO==-1)
+                        return;
+                    System.out.print("\tMonth: ");
+                    monthCO = scanInt();
+                    if(monthCO==-1)
+                        return;
+                    System.out.print("\tYear: ");
+                    yearCO = scanInt();
+                    if(yearCO==-1)
+                        return;
+                    if(!COafterCI)
+                            dateCheckIn = aux.getCheckInDate().toString();
+                    dateCheckOut = yearCO+"-"+monthCO+"-"+dayCO;
+                    if (Date.valueOf(dateCheckOut).after(Date.valueOf(dateCheckIn))) {
+                        if(COafterCI)
+                            aux.setCheckInDate(Date.valueOf(dateCheckIn));
+                        aux.setCheckOutDate(Date.valueOf(dateCheckOut));
+                        COafterCI=false;
+                        break;
+                    }
+                    System.out.println("Data invalida");
+                    break;
+                case "nif":
+                    do{
+                        System.out.print("NIF: ");
+                        auxInt = scanInt();
+                        flag=1;
+                        if(auxInt==-1){
+                            flag=0;
+                            break;
+                        }
+                    } while(!model.verifyNIF(auxInt));
+                    if(flag==1)
+                        aux.setNif(auxInt);
+                    break;
+                case "vrn":
+
+                    do{
+                        System.out.print("VRN: ");
+                        auxStr = scanner.next();
+                        flag=1;
+                        if(auxStr.equals("quit")){
+                            flag=0;
+                            break;
+                        }
+                    } while(!model.verifyVRN(auxStr));
+                    if(flag==1)
+                        aux.setRegNumber(auxStr.toUpperCase());
+                    break;
+                case "confirm":
+                    model.editReservation(aux);
+                    return;
+                case "help":
+                    System.out.println("Commands: \n\tname | check-in | check-out | nif | vrn | details | confirm");
+                    break;
+                case "details":
+                    System.out.println(model.showDetails(aux));
+                    break;
+                default:
+                    System.out.println("Invalid command\n");
+            }
+            System.out.print("Command: ");
+            command = scanner.next();
+        }
+        System.out.println(model.showDetails(aux));
+        System.out.print("Apply configurations?\nCommand (yes/no): ");
+        command = scanner.next();
+        if(command.equalsIgnoreCase("yes"))
+            model.editReservation(aux);
+        else
+            return;
+    }
+
+    public static void Interface_AddReservations(){
         String dateCheckIn;
         String name, category, vrn, intAux;
         int dayCI, monthCI, yearCI, dayCO, monthCO, yearCO, nif;
@@ -336,9 +475,8 @@ public class Main {
             System.out.println("\nNo slots available for the specified date.");
         */
 
-        //System.out.println(model.addReservation("Rui Pinto", Date.valueOf("2022-03-01"), Date.valueOf("2038-11-31"), 3.2, 987654321, "AP-2791-SP", 1, "Small"));
-        //System.out.println(model.addReservation("Rui Tavares", Date.valueOf("2022-03-01"), Date.valueOf("2038-11-31"), 3.2, 987654321, "AP-2791-SP", 1, "Small"));
-
+        //System.out.println(model.addReservation("Rui Pinto", Date.valueOf("2037-03-01"), Date.valueOf("2038-11-31"), 3.2, 987654321, "AP-27-SP", 0, "Small"));
+        //System.out.println(model.addReservation("Rui Tavares", Date.valueOf("2037-03-01"), Date.valueOf("2038-11-31"), 3.2, 987654321, "AP-27-SP", 0, "Small"));
 
         //System.out.print(model.cancelReservation(6));
         //System.out.println(model.viewStatistics(2030));
