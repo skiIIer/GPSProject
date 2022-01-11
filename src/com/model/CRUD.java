@@ -89,8 +89,53 @@ public class CRUD {
         return true;
     }
 
-    public static ArrayList view(){
-        String sql="SELECT * FROM mms.reservations";
+    public static ArrayList read(){
+        String sql="SELECT * FROM mms.reservations ORDER BY checkInDate";
+        String result;
+        ArrayList<Reservation> lista= new ArrayList<Reservation>();
+        Reservation reservation;
+
+        try {
+            pstm=connection.prepareStatement(sql);
+            ResultSet rs = pstm.executeQuery();
+            while (rs.next()) {
+                reservation = new Reservation(
+                        rs.getString("clientName"),
+                        rs.getDate("checkInDate"),
+                        rs.getDate("checkOutDate"),
+                        rs.getFloat("bill"),
+                        rs.getInt("nif"),
+                        rs.getString("vehicleRegistrationNumber"),
+                        rs.getInt("state"),
+                        rs.getString("category"),
+                        read(rs.getInt("idReservations")));
+                reservation.setId(rs.getInt("idReservations"));
+
+                lista.add(reservation);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    private static String read(int idReservations) {
+        String sql="SELECT s.slotName FROM mms.slots s INNER JOIN mms.reservations r ON r.idReservations = " + idReservations + " AND s.idSlots = r.Slots_idSlots";
+
+        try {
+            Statement stm = connection.createStatement();
+
+            ResultSet resultSet = stm.executeQuery(sql);
+            if(resultSet.next())
+                return resultSet.getString("slotName");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return "No Information Available";
+    }
+
+    public static ArrayList read(State state){
+        String sql="SELECT * FROM mms.reservations WHERE state=" + state.getValue() + " ORDER BY checkInDate";
         String result;
         ArrayList<Reservation> lista= new ArrayList<Reservation>();
         Reservation reservation;
@@ -277,7 +322,7 @@ public class CRUD {
         return "No Information Available";
     }
 
-    public static boolean edit(Reservation reservation){
+    public static boolean update(Reservation reservation){
         String sql = "UPDATE mms.reservations " +
                 "SET clientName=?, checkInDate=?, checkOutDate=?, nif=?, vehicleRegistrationNumber=?" +
                 "WHERE idReservations=?";
@@ -290,6 +335,26 @@ public class CRUD {
             pstm.setInt(4, reservation.getNif());
             pstm.setString(5, reservation.getRegNumber());
             pstm.setInt(6, reservation.getId());
+
+            if (!pstm.execute())
+                return false;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
+    public static boolean update(int id, State state){
+        String sql = "UPDATE mms.reservations " +
+                "SET state=? " +
+                "WHERE idReservations=?";
+
+        try {
+            pstm = connection.prepareStatement(sql);
+            pstm.setInt(1,state.getValue());
+            pstm.setInt(2,id);
 
             if (!pstm.execute())
                 return false;
