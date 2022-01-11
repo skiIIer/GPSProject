@@ -187,9 +187,6 @@ public class Model {
     }
 
     public String viewReservationByState(State state){
-
-
-
         ArrayList<Reservation> lista = crud.viewReservationByState(state);
         String s = "";
         for(Reservation x : lista){
@@ -204,6 +201,11 @@ public class Model {
     public Reservation getReservation(int id){
         return crud.getReservation(id);
     }
+
+    public Reservation getReservation(String vrn){
+        return crud.getReservation(vrn);
+    }
+
     public String showDetails(Reservation aux){
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         return "ID " + aux.getId() +

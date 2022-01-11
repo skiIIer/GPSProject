@@ -395,6 +395,34 @@ public class CRUD {
         return reservation;
     }
 
+    public static Reservation getReservation(String vrn){
+        String sql = "SELECT * FROM mms.reservations WHERE vehicleRegistrationNumber=? AND state=1";
+        ResultSet rs;
+        Reservation reservation = null;
+        try {
+            pstm = connection.prepareStatement(sql);
+            pstm.setString(1, vrn);
+
+            rs = pstm.executeQuery();
+            if(rs.next()) {
+                reservation = new Reservation(
+                        rs.getString("clientName"),
+                        rs.getDate("checkInDate"),
+                        rs.getDate("checkOutDate"),
+                        rs.getFloat("bill"),
+                        rs.getInt("nif"),
+                        rs.getString("vehicleRegistrationNumber"),
+                        rs.getInt("state"),
+                        rs.getString("category"));
+                reservation.setId(rs.getInt("idReservations"));
+                reservation.setSlot(read(reservation.getId()));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return reservation;
+    }
 
     public ArrayList viewReservationByState(State state) {
         ArrayList<Reservation> lista = read(state);

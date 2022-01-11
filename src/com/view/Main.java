@@ -302,10 +302,14 @@ public class Main {
                 value = arr[1];
 
                 if (cmd.compareToIgnoreCase("search") == 0) {
-                    if (model.verifyVRN(value))
-                        System.out.println(); //ACRESCENTAR FUNCAO QUE VAI BUSCAR DADOS DE UMA RESERVA
-                    else
-                        System.out.println("Please insert a valid VRN");
+                    if (model.verifyVRN(value)) {
+                        Reservation r = model.getReservation(value);
+                        if(r!=null)
+                            System.out.println(model.showDetails(r));
+                        else
+                            System.out.println("Please insert a valid VRN with an active Reservation");
+                    }else
+                        System.out.println("Please insert a valid VRN with an active Reservation");
 
                 } else if (cmd.compareToIgnoreCase("edit") == 0) {
                     if (isNumeric(value)) {
@@ -317,10 +321,15 @@ public class Main {
                 } else if (cmd.compareToIgnoreCase("cancel") == 0) {
                     if (isNumeric(value)) {
                         val = Integer.parseInt(value);
-                        if (model.cancelReservation(val))
-                            System.out.println("Reservation with id " + value + " cancelled with success");
-                        else
-                            System.out.println("Reservation with id " + val + " not found");
+                        System.out.print("Apply configurations?\nCommand (yes/no): ");
+                        command = scanner.next();
+                        if(command.equalsIgnoreCase("yes")) {
+                            if (model.cancelReservation(val))
+                                System.out.println("Reservation with id " + val + " cancelled with success");
+                            else
+                                System.out.println("Reservation with id " + val + " not found");
+                        } else
+                            return;
                     }
                 } else
                     System.out.println(cmd + " is not recognized as a command\n\n");
@@ -473,7 +482,7 @@ public class Main {
             System.out.println("\nNo slots available for the specified date.");
         */
 
-        //System.out.println(model.addReservation("Rui Pinto", Date.valueOf("2037-03-01"), Date.valueOf("2038-11-31"), 3.2, 987654321, "AP-27-SP", 0, "Small"));
+        //System.out.println(model.addReservation("Rui Pinto", Date.valueOf("2010-03-01"), Date.valueOf("2038-11-31"), 3.2, 987654321, "AL-2712-SP", 0, "Small"));
         //System.out.println(model.addReservation("Rui Tavares", Date.valueOf("2037-03-01"), Date.valueOf("2038-11-31"), 3.2, 987654321, "AP-27-SP", 0, "Small"));
 
         //System.out.print(model.cancelReservation(6));
