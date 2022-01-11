@@ -162,17 +162,17 @@ public class CRUD {
         return lista;
     }
 
-    public static boolean update(int id, int fuelInEuros){
+    public static boolean update(int id, Double fuelInEuros){
         String sql = "UPDATE mms.reservations " +
                 "SET bill = bill + ? " +
-                "WHERE idReservations = id";
+                "WHERE idReservations = ?";
 
         try {
             pstm = connection.prepareStatement(sql);
-            pstm.setInt(1, fuelInEuros);
+            pstm.setDouble(1, fuelInEuros);
             pstm.setInt(2, id);
 
-            if (!pstm.execute())
+            if (pstm.execute())
                 return false;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -218,14 +218,14 @@ public class CRUD {
 
             if(large > medium && large > small)
             {
-                result = "Large (" + String.valueOf(large) + " vehicles)";
+                result = "Large (" + large + " vehicles)";
             }
             else
             if(medium > small){
-                result = "Medium (" + String.valueOf(medium) + " vehicles)";
+                result = "Medium (" + medium + " vehicles)";
             }
             else{
-                result = "Small (" + String.valueOf(small) + " vehicles)";
+                result = "Small (" + small + " vehicles)";
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -399,6 +399,7 @@ public class CRUD {
         int idReservation;
 
         for (int i = 0; i<lista.size(); i++){
+
             idReservation = lista.get(i).getId();
             lista.get(i).setSlot(read(idReservation));
         }
