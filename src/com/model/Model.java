@@ -73,12 +73,12 @@ public class Model {
         String s = "";
         DecimalFormat df = new DecimalFormat("0.00");
         for(Reservation x : lista){
-            s += "ID: " + x.getId() +
+            s += "\tID: " + x.getId() +
                     " | Name: " + x.getClientName() +
                     " | NIF/TIN: " + x.getNif() +
                     " | VRN: " + x.getRegNumber() +
                     " | Slot: " + x.getSlot()+
-                    "\nCheck-In: " + x.getCheckInDate() +
+                    "\n\tCheck-In: " + x.getCheckInDate() +
                     " | Check-Out: " + x.getCheckOutDate() +
                     " | Total Bill: " + /*Math.round(*/df.format(x.getBill())/*100.0) / 100.0*/ + " $\n";
         }

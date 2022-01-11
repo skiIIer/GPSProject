@@ -4,6 +4,9 @@ import com.model.Model;
 import com.model.Reservation;
 import com.model.State;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.*;
 import java.sql.Connection;
 import java.text.DateFormat;
@@ -14,6 +17,15 @@ import java.util.Scanner;
 public class Main {
     private static Model model;
     private static Scanner scanner=new Scanner(System.in);
+
+    public static boolean isNumeric(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch(NumberFormatException e){
+            return false;
+        }
+    }
 
     public static int scanInt(){
         while (true) {
@@ -121,6 +133,66 @@ public class Main {
             System.out.println("\nNo slots available for the specified date.");
     }
 
+    public static void Interface_ViewReservations(){
+        String command="",cmd="", value="";
+        int val;
+
+        System.out.println("---------------------------------------------------------------------\n" +
+                "MMS / Reservations / View\n" +
+                "---------------------------------------------------------------------");
+        System.out.println("Reservations:");
+        System.out.println(model.viewReservations());
+        System.out.println("---------------------------------------------------------------------\n" +
+                "Commands available:\n\t-> search <VRN>\n\t-> edit <id>\n\t-> cancel <id>\n\t-> quit");
+        while (true) {
+            System.out.print("Command: ");
+            //while (scanner.hasNext())
+            //command += scanner.next();
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(System.in));
+
+            // Reading data using readLine
+            try {
+                command = reader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(command.trim().split("\\s+").length==2) {
+                String arr[] = command.split(" ", 2);
+                cmd = arr[0];
+                value = arr[1];
+
+                if(cmd.compareToIgnoreCase("search")==0){
+                    if(model.verifyVRN(value))
+                        System.out.println(); //ACRESCENTAR FUNCAO QUE VAI BUSCAR DADOS DE UMA RESERVA
+                    else
+                        System.out.println("Please insert a valid VRN");
+
+                }else if(cmd.compareToIgnoreCase("edit")==0){
+                    if(isNumeric(value)) {
+                        val = Integer.parseInt(value);
+                        //CHAMA FUNCAO DA INTERFACE DO EDIT
+                    }else
+                        System.out.println("Please insert a valid id");
+
+                }else if(cmd.compareToIgnoreCase("cancel")==0){
+                    if(isNumeric(value)) {
+                        val = Integer.parseInt(value);
+                        if (model.cancelReservation(val))
+                            System.out.println("Reservation with id " + value + " cancelled with success");
+                        else
+                            System.out.println("Reservation with id " + val + " not found");
+                    }
+                }else if(cmd.compareToIgnoreCase("quit")==0){
+                    return;
+                }else
+                    System.out.println(cmd + " is not recognized as a command\n\n");
+            }else
+                System.out.println(command + " is not recognized as a command\n\n");
+
+        }
+    }
+
     public static void Interface_ReservationsSubmenu(){
         int option;
 
@@ -137,7 +209,7 @@ public class Main {
                     Interface_AddReservations();
                     break;
                 case 2:
-                    System.out.println(model.viewReservations());
+                    Interface_ViewReservations();
                     break;
                 case 3:
                     return;
@@ -209,8 +281,8 @@ public class Main {
 
         */
 
-        System.out.println(model.addReservation("Rui Pinto", Date.valueOf("2037-03-01"), Date.valueOf("2038-11-31"), 3.2, 987654321, "AP-27-SP", 0, "Small"));
-        System.out.println(model.addReservation("Rui Tavares", Date.valueOf("2037-03-01"), Date.valueOf("2038-11-31"), 3.2, 987654321, "AP-27-SP", 0, "Small"));
+        System.out.println(model.addReservation("Rui Pinto", Date.valueOf("2037-03-01"), Date.valueOf("2038-11-31"), 3.2, 987654321, "AP-2791-SP", 0, "Small"));
+        System.out.println(model.addReservation("Rui Tavares", Date.valueOf("2037-03-01"), Date.valueOf("2038-11-31"), 3.2, 987654321, "AP-2791-SP", 0, "Small"));
 
         //System.out.print(model.cancelReservation(6));
 

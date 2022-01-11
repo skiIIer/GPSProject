@@ -9,7 +9,7 @@ public class DatabaseModel {
     private static PreparedStatement pstm;
     private static Statement stm;
     private static ResultSet resultSet;
-    private static final String url = "jdbc:mysql://localhost:3306", user = "root", password = "root";
+    private static final String url = "jdbc:mysql://localhost:3001", user = "root", password = "espera10";
     private static String sql = "CREATE DATABASE IF NOT EXISTS mms";
 
     public DatabaseModel() throws SQLException {
@@ -75,7 +75,7 @@ public class DatabaseModel {
         return 0;
     }
 
-    public int verifySlot(String category, Date checkI, Date checkO){
+    public int verifySlot(String vrn, String category, Date checkI, Date checkO){
         List al = new ArrayList<Integer>();
 
         String sql = "SELECT s.idSlots \n" +
