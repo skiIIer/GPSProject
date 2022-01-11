@@ -75,13 +75,45 @@ public class DatabaseModel {
         return 0;
     }
 
+    public boolean verifyExistingReservationVrnDates(String vrn, Date checkI, Date checkO){
+        String sql = "SELECT r.idReservations\n" +
+                "FROM mms.reservations r \n" +
+                "WHERE r.vehicleRegistrationNumber = '" + vrn + "' AND \n" +
+                "((r.checkInDate >= '" + checkI + "' and r.checkInDate <= '" + checkO + "') \n" +
+                "or (r.checkOutDate >= '" + checkI + "' and r.checkOutDate <= '" + checkO + "'));";
+
+
+        try {
+            stm = connection.createStatement();
+
+            resultSet = stm.executeQuery(sql);
+
+            if (!resultSet.isBeforeFirst()) //No data
+                return false;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
     public int verifySlot(String category, Date checkI, Date checkO){
-        List al = new ArrayList<Integer>();
+        String sql = "SELECT s.idSlots\n" +
+                "FROM mms.slots s, mms.categories c\n" +
+                "WHERE c.name= '" + category + "' AND c.idCategories = s.Categories_idCategories AND NOT EXISTS\n" +
+                "(SELECT r.Slots_idSlots \n" +
+                "FROM mms.reservations r\n" +
+                "WHERE r.Slots_idSlots = s.idSlots AND\n" +
+                "((r.checkInDate >= '" + checkI + "' and r.checkInDate <= '"+ checkO + "') \n" +
+                "or (r.checkOutDate >= '" + checkI + "' and r.checkOutDate <= '" + checkO + "')));";
+
+        /*List al = new ArrayList<Integer>();
 
         String sql = "SELECT s.idSlots \n" +
                 "FROM mms.slots s\n" +
                 "INNER JOIN mms.categories c\n" +
-                "ON c.name = '" + category + "' and c.idCategories = s.Categories_idCategories;";
+                "ON c.name = '" + category + "' and c.idCategories = s.Categories_idCategories;";*/
 
         try {
             stm = connection.createStatement();
@@ -89,9 +121,9 @@ public class DatabaseModel {
             resultSet = stm.executeQuery(sql);
 
             while(resultSet.next()){
-                al.add(resultSet.getInt("idSlots"));
+                return resultSet.getInt("idSlots");
             }
-
+/*
             for(Object i: al){
                 sql = "SELECT s.idSlots \n" +
                         "FROM mms.slots s\n" +
@@ -106,7 +138,7 @@ public class DatabaseModel {
                 while(resultSet.next()){
                     return resultSet.getInt("idSlots");
                 }
-            }
+            }*/
         } catch (SQLException e) {
             e.printStackTrace();
         }

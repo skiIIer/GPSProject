@@ -147,7 +147,9 @@ public class Model {
     }
 
       public int verifySlot(String vrn, String category, Date checkIn, Date checkOut){
-        return databaseModel.verifySlot(vrn, category, checkIn, checkOut);
+        if(!databaseModel.verifyExistingReservationVrnDates(vrn, checkIn, checkOut))
+            return databaseModel.verifySlot(category, checkIn, checkOut);
+        return 0;
       }
 
     public String viewStatistics(int year){
