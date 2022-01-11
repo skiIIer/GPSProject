@@ -375,6 +375,7 @@ public class CRUD {
             pstm.setInt(1, id);
 
             rs = pstm.executeQuery();
+            rs.next();
             reservation = new Reservation(
                     rs.getString("clientName"),
                     rs.getDate("checkInDate"),
@@ -385,6 +386,7 @@ public class CRUD {
                     rs.getInt("state"),
                     rs.getString("category"));
             reservation.setId(rs.getInt("idReservations"));
+            reservation.setSlot(read(id));
 
         }
         catch (SQLException e) {

@@ -192,4 +192,20 @@ public class Model {
     public String calcMostProfitMonth(int year){
         return "\t\t\tMost profitable month: " + crud.viewMostProfitableMonth(year) + "\n";
     }
+
+    public Reservation getReservation(int id){
+        return crud.getReservation(id);
+    }
+    public String showDetails(Reservation aux){
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        return "ID " + aux.getId() +
+                "\nCheck-In: " + df.format(aux.getCheckInDate()) +
+                "\nCheck-Out: " + df.format(aux.getCheckOutDate()) +
+                "\nName: " + aux.getClientName() +
+                "\nNIF / TIN: " + aux.getNif() +
+                "\nVehicle Category(Large, Medium, Small): " + aux.getCategory() +
+                "\nVehicle Registration Number / VRN: " + aux.getRegNumber() +
+                "\nReserved Slot: " + aux.getSlot() +
+                "\n---------------------------------------------------------------------";
+    }
 }

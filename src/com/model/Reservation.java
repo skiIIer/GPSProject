@@ -12,8 +12,8 @@ public class Reservation {
     private String regNumber;
     private int state;
     private String slot;
-
     private String category;
+
 
     public Reservation(String clientName, Date checkInDate, Date checkOutDate, double bill, int nif, String regNumber, int state, String category) {
         this.clientName = clientName;
