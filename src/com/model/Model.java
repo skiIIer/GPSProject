@@ -18,7 +18,7 @@ public class Model {
         try {
             dateNow = new java.util.Date();
             databaseModel = new DatabaseModel();//Initializes database
-            crud = new CRUD(databaseModel.getConnection());//Initializes API for database operations
+            crud = new CRUD(DatabaseModel.getConnection());//Initializes API for database operations
             updateState();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -26,12 +26,12 @@ public class Model {
     }
 
     private void updateState() {
-        ArrayList<Reservation> list = crud.read();
+        ArrayList<Reservation> list = CRUD.read();
         for(Reservation r : list){
             if(r.getCheckInDate().before(dateNow) && r.getCheckOutDate().after(dateNow))
-                crud.update(r.getId(),State.ACTIVE);
+                CRUD.update(r.getId(),State.ACTIVE);
             else if(r.getCheckOutDate().before(dateNow))
-                crud.update(r.getId(),State.DONE);
+                CRUD.update(r.getId(),State.DONE);
         }
     }
 
@@ -40,13 +40,13 @@ public class Model {
         availableSlot = verifySlot(regNumber, category, checkIn, checkOut);
         if(availableSlot!=0) {
             Reservation reservation = new Reservation(name, checkIn, checkOut, bill, nif, regNumber, state, category);
-            crud.create(reservation, availableSlot);
+            CRUD.create(reservation, availableSlot);
             return true;
         } else
             return false;
     }
     public boolean editReservation(Reservation reservation){
-        return crud.update(reservation);
+        return CRUD.update(reservation);
     }
 //    public boolean verifyFormat(){}
 
@@ -62,14 +62,11 @@ public class Model {
             return false;
         }
 
-        if(!dateCheckIn.after(dateNow))
-            return false;
-
-        return true;
+        return dateCheckIn.after(dateNow);
     }
 
     public String viewReservations(){
-        ArrayList<Reservation> lista = crud.read();
+        ArrayList<Reservation> lista = CRUD.read();
         String s = "";
         DecimalFormat df = new DecimalFormat("0.00");
         for(Reservation x : lista){
@@ -83,7 +80,6 @@ public class Model {
                     " | Total Bill: " + /*Math.round(*/df.format(x.getBill())/*100.0) / 100.0*/ + " $\n";
         }
         return s;
-
     }
 
     public boolean verifyDateCO(int day, int month, int year, String dateCheckInStr){
@@ -99,10 +95,7 @@ public class Model {
             return false;
         }
 
-        if(!dateCheckOut.after(dateCheckIn))
-            return false;
-
-        return true;
+        return dateCheckOut.after(dateCheckIn);
     }
 
     public boolean verifyName(String name) {
@@ -123,16 +116,15 @@ public class Model {
 
     public boolean verifyYear(int year){
         int yearNow = Calendar.getInstance().get(Calendar.YEAR);
-        if(/*yearNow<year ||*/ 1500>year)
-            return false;
-        return true;
+        /*yearNow<year ||*/
+        return 1500 <= year;
     }
 
     public boolean cancelReservation(int id){
-        return crud.delete(id);
+        return CRUD.delete(id);
     }
 
-      public boolean refuel(String VRN, int fuelInEuros){
+      public boolean refuel(String VRN, Double fuelInEuros){
         int id = DatabaseModel.getIdReservation(VRN);
         if(id!=0)
             return CRUD.update(id, fuelInEuros);
@@ -180,7 +172,7 @@ public class Model {
         DecimalFormat df = new DecimalFormat("0.00");
 
         String result = "\t\t\tAnnual Income: ";
-        double annualIncome = crud.viewAnnualIncome(year);
+        double annualIncome = CRUD.viewAnnualIncome(year);
         if(annualIncome==-1)
             result += "No Information Available\n";
         else
@@ -193,7 +185,18 @@ public class Model {
         return "\t\t\tMost profitable month: " + crud.viewMostProfitableMonth(year) + "\n";
     }
 
-    public ArrayList viewReservationByState(State state){
-        return crud.viewReservationByState(state);
+    public String viewReservationByState(State state){
+
+
+
+        ArrayList<Reservation> lista = crud.viewReservationByState(state);
+        String s = "";
+        for(Reservation x : lista){
+            s += "\tName: " + x.getClientName() +
+                    " | NIF/TIN: " + x.getNif() +
+                    " | VRN: " + x.getRegNumber() +
+                    " | Slot: " + x.getSlot() + "\n";
+        }
+        return s;
     }
 }
