@@ -238,6 +238,27 @@ public class Main {
         }
     }
 
+    private static void Interface_Refuel() {
+        String option, input;
+
+        System.out.println("---------------------------------------------------------------------\n" +
+                "MMS / Refuel\n" +
+                "---------------------------------------------------------------------");
+        model.viewReservationByState(State.ACTIVE);
+        System.out.println("---------------------------------------------------------------------");
+        System.out.println("Commands available:\n");
+        System.out.println("\t\t->refuel <VRN> <Valor>\n\t\t->quit\n");
+
+        while (true){
+            input = scanner.nextLine();
+            option = String.format("refuel ");
+
+            break;
+        }
+
+
+    }
+
     public static void Interface(){
         int option;
 
@@ -254,7 +275,7 @@ public class Main {
                     Interface_ReservationsSubmenu();
                     break;
                 case 2:
-                    System.out.println("Refuel!!");
+                    Interface_Refuel();
                     break;
                 case 3:
                     Interface_Statistics();
@@ -269,6 +290,7 @@ public class Main {
         }
     }
 
+
     public static void main(String[] args) {
         model = new Model();
         /*
@@ -278,16 +300,15 @@ public class Main {
             System.out.println("Reservation successfully made.");
         else
             System.out.println("\nNo slots available for the specified date.");
-
         */
 
         System.out.println(model.addReservation("Rui Pinto", Date.valueOf("2037-03-01"), Date.valueOf("2038-11-31"), 3.2, 987654321, "AP-2791-SP", 0, "Small"));
         System.out.println(model.addReservation("Rui Tavares", Date.valueOf("2037-03-01"), Date.valueOf("2038-11-31"), 3.2, 987654321, "AP-2791-SP", 0, "Small"));
 
         //System.out.print(model.cancelReservation(6));
-
         //System.out.println(model.viewStatistics(2030));
-        Interface();
+
+        //Interface();
         return;
     }
 }
