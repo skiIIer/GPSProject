@@ -75,7 +75,7 @@ public class DatabaseModel {
         return 0;
     }
 
-    public int verifySlot(String category, Date checkI, Date checkO){
+    public int verifySlot( String vrn, String category, Date checkI, Date checkO){
         List al = new ArrayList<Integer>();
 
         String sql = "SELECT s.idSlots \n" +

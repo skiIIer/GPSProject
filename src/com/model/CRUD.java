@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.Date;
-import java.text.DateFormatSymbols;
 
 public class CRUD {
     private static Connection connection;
@@ -395,4 +394,15 @@ public class CRUD {
     }
 
 
+    public ArrayList viewReservationByState(State state) {
+        ArrayList<Reservation> lista = read(state);
+        int idReservation;
+
+        for (int i = 0; i<lista.size(); i++){
+            idReservation = lista.get(i).getId();
+            lista.get(i).setSlot(read(idReservation));
+        }
+
+        return lista;
+    }
 }
