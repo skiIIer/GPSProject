@@ -12,19 +12,32 @@ import java.util.Calendar;
 public class Model {
     CRUD crud;
     DatabaseModel databaseModel;
+    java.util.Date dateNow;
 
     public Model(){
         try {
+            dateNow = new java.util.Date();
             databaseModel = new DatabaseModel();//Initializes database
             crud = new CRUD(databaseModel.getConnection());//Initializes API for database operations
+            updateState();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+    private void updateState() {
+        ArrayList<Reservation> list = crud.read();
+        for(Reservation r : list){
+            if(r.getCheckInDate().before(dateNow) && r.getCheckOutDate().after(dateNow))
+                crud.update(r.getId(),State.ACTIVE);
+            else if(r.getCheckOutDate().before(dateNow))
+                crud.update(r.getId(),State.DONE);
+        }
+    }
+
     public boolean addReservation(String name, Date checkIn, Date checkOut, double bill, int nif, String regNumber, int state, String category){
         int availableSlot;
-        availableSlot = verifySlot(category, checkIn, checkOut);
+        availableSlot = verifySlot(regNumber, category, checkIn, checkOut);
         if(availableSlot!=0) {
             Reservation reservation = new Reservation(name, checkIn, checkOut, bill, nif, regNumber, state, category);
             crud.create(reservation, availableSlot);
@@ -33,13 +46,13 @@ public class Model {
             return false;
     }
     public boolean editReservation(Reservation reservation){
-        return crud.edit(reservation);
+        return crud.update(reservation);
     }
 //    public boolean verifyFormat(){}
 
     public boolean verifyDateCI(int day, int month, int year){
         String date = day+"-"+month+"-"+year;
-        java.util.Date dateCheckIn, dateNow;
+        java.util.Date dateCheckIn;
 
         try {
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
@@ -49,25 +62,25 @@ public class Model {
             return false;
         }
 
-        dateNow = new java.util.Date();
-        if(dateCheckIn.before(dateNow))
+        if(!dateCheckIn.after(dateNow))
             return false;
 
         return true;
     }
 
     public String viewReservations(){
-        ArrayList<Reservation> lista = crud.view();
+        ArrayList<Reservation> lista = crud.read();
         String s = "";
+        DecimalFormat df = new DecimalFormat("0.00");
         for(Reservation x : lista){
-            s += x.getId() +
-                    " | " + x.getClientName() +
-                    " | " + x.getCheckInDate() +
-                    " | " + x.getCheckOutDate() +
-                    " | " + Math.round(x.getBill()*100.0) / 100.0 +
-                    " | " + x.getNif() +
-                    " | " + x.getRegNumber() +
-                    " | " + x.getState() + "\n";
+            s += "ID: " + x.getId() +
+                    " | Name: " + x.getClientName() +
+                    " | NIF/TIN: " + x.getNif() +
+                    " | VRN: " + x.getRegNumber() +
+                    " | Slot: " + x.getSlot()+
+                    "\nCheck-In: " + x.getCheckInDate() +
+                    " | Check-Out: " + x.getCheckOutDate() +
+                    " | Total Bill: " + /*Math.round(*/df.format(x.getBill())/*100.0) / 100.0*/ + " $\n";
         }
         return s;
 
@@ -119,8 +132,6 @@ public class Model {
         return crud.delete(id);
     }
 
-//    public String viewReservations(){}
-
       public boolean refuel(String VRN, int fuelInEuros){
         int id = DatabaseModel.getIdReservation(VRN);
         if(id!=0)
@@ -135,8 +146,8 @@ public class Model {
         return 0;
     }
 
-      public int verifySlot(String category, Date checkIn, Date checkOut){
-        return databaseModel.verifySlot(category, checkIn, checkOut);
+      public int verifySlot(String vrn, String category, Date checkIn, Date checkOut){
+        return databaseModel.verifySlot(vrn, category, checkIn, checkOut);
       }
 
     public String viewStatistics(int year){

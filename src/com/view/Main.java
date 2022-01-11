@@ -2,6 +2,7 @@ package com.view;
 
 import com.model.Model;
 import com.model.Reservation;
+import com.model.State;
 
 import java.sql.*;
 import java.sql.Connection;
@@ -14,8 +15,23 @@ public class Main {
     private static Model model;
     private static Scanner scanner=new Scanner(System.in);
 
+    public static int scanInt(){
+        while (true) {
+            if (scanner.hasNextInt()) {
+                return scanner.nextInt();
+            } else {
+                if (scanner.next().compareToIgnoreCase("quit") == 0)
+                    return -1;
+            }
+        }
+    }
+
     public static void Interface_AddReservations(){
         String dateCheckIn;
+        String name, category, vrn, intAux;
+        int dayCI, monthCI, yearCI, dayCO, monthCO, yearCO, nif;
+
+
         System.out.println("---------------------------------------------------------------------\n" +
                 "MMS / Reservations / Add\n" +
                 "---------------------------------------------------------------------\n" +
@@ -23,14 +39,17 @@ public class Main {
         while (true) {
             System.out.println("Check-In:");
             System.out.print("\tDay: ");
-            while (!scanner.hasNextInt()) scanner.next();
-            int dayCI = scanner.nextInt();
+            dayCI = scanInt();
+            if(dayCI==-1)
+                return;
             System.out.print("\tMonth: ");
-            while (!scanner.hasNextInt()) scanner.next();
-            int monthCI = scanner.nextInt();
+            monthCI = scanInt();
+            if(monthCI==-1)
+                return;
             System.out.print("\tYear: ");
-            while (!scanner.hasNextInt()) scanner.next();
-            int yearCI = scanner.nextInt();
+            yearCI = scanInt();
+            if(yearCI==-1)
+                return;
             if (model.verifyDateCI(dayCI, monthCI, yearCI)) {
                 dateCheckIn = dayCI+"-"+monthCI+"-"+yearCI;
                 break;
@@ -40,14 +59,17 @@ public class Main {
         while (true) {
             System.out.println("Check-Out:");
             System.out.print("\tDay: ");
-            while (!scanner.hasNextInt()) scanner.next();
-            int dayCO = scanner.nextInt();
+            dayCO = scanInt();
+            if(dayCO==-1)
+                return;
             System.out.print("\tMonth: ");
-            while (!scanner.hasNextInt()) scanner.next();
-            int monthCO = scanner.nextInt();
+            monthCO = scanInt();
+            if(monthCO==-1)
+                return;
             System.out.print("\tYear: ");
-            while (!scanner.hasNextInt()) scanner.next();
-            int yearCO = scanner.nextInt();
+            yearCO = scanInt();
+            if(yearCO==-1)
+                return;
             if (model.verifyDateCO(dayCO, monthCO, yearCO, dateCheckIn))
                 break;
         }
@@ -55,15 +77,18 @@ public class Main {
         while (true) {
             System.out.print("Name: ");
             while (!scanner.hasNext()) scanner.next();
-            String name = scanner.nextLine();
+            name = scanner.nextLine();
+            if(name.compareToIgnoreCase("quit")==0)
+                return;
             if (model.verifyName(name))
                 break;
         }
 
         while (true) {
             System.out.print("NIF / TIN: ");
-            while (!scanner.hasNextInt()) scanner.next();
-            int nif = scanner.nextInt();
+            nif = scanInt();
+            if(nif==-1)
+                return;
             if (model.verifyNIF(nif))
                 break;
         }
@@ -71,7 +96,9 @@ public class Main {
         while (true) {
             System.out.print("Vehicle Category (Large, Medium, Small): ");
             while (!scanner.hasNext()) scanner.next();
-            String category = scanner.next();
+            category = scanner.next();
+            if(category.compareToIgnoreCase("quit")==0)
+                return;
             if (model.verifyCategory(category))
                 break;
         }
@@ -79,11 +106,19 @@ public class Main {
         while (true) {
             System.out.print("Vehicle Registration Number / VRN (Format:XX-XXXX-XX): ");
             while (!scanner.hasNext()) scanner.next();
-            String vrn = scanner.next();
+            vrn = scanner.next();
+            if(vrn.compareToIgnoreCase("quit")==0)
+                return;
             if (model.verifyVRN(vrn))
                 break;
 
         }
+
+        //Adds
+        if(model.addReservation(name, Date.valueOf(dayCI+"-"+monthCI+"-"+yearCI), Date.valueOf(dayCO+"-"+monthCO+"-"+yearCO), 0, nif, vrn, State.SCHEDULED.getValue(), category))
+            System.out.println("Reservation successfully made.");
+        else
+            System.out.println("\nNo slots available for the specified date.");
     }
 
     public static void Interface_ReservationsSubmenu(){
@@ -100,16 +135,9 @@ public class Main {
             switch (option) {
                 case 1:
                     Interface_AddReservations();
-
-                    //Adds
-                    if(model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-11-31"), 15.2, 234124721, "AS-27-SD", 2, "Large"))
-                        System.out.println("Reservation successfully made.");
-                    else
-                        System.out.println("\nNo slots available for the specified date.");
-
                     break;
                 case 2:
-                    System.out.println("View Reservations!!");
+                    System.out.println(model.viewReservations());
                     break;
                 case 3:
                     return;
@@ -160,7 +188,7 @@ public class Main {
                     Interface_Statistics();
                     break;
                 case 4:
-                    System.out.println("\nA encerrar Sistema...\n");
+                    System.out.println("\n...\n");
                     return;
                 default:
                     System.out.println(option + " is not recognized as a command\n\n");
@@ -171,6 +199,7 @@ public class Main {
 
     public static void main(String[] args) {
         model = new Model();
+        /*
         if(model.addReservation("Rui Pinto", Date.valueOf("2019-03-01"), Date.valueOf("2022-11-31"), 3, 987654321, "AP-27-SD", 2, "Large") &&
                 model.addReservation("To Manel", Date.valueOf("2027-03-01"), Date.valueOf("2029-11-31"), 15.2, 234124721, "AS-27-SD", 2, "Medium"))
 
@@ -178,12 +207,10 @@ public class Main {
         else
             System.out.println("\nNo slots available for the specified date.");
 
-         */
-        model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-11-30"), 15, 234124721, "AS-27-SD", 2, "Small");
-        model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-10-11"), 15, 234124721, "AS-27-SD", 2, "Medium");
-        model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-9-11"), 15, 234124721, "AS-27-SD", 2, "Medium");
-        model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-8-23"), 15, 234124721, "AS-27-SD", 2, "Large");
-        model.addReservation("To Manel", Date.valueOf("2010-03-01"), Date.valueOf("2030-7-23"), 15, 234124721, "AS-27-SD", 2, "Small");
+        */
+
+        System.out.println(model.addReservation("Rui Pinto", Date.valueOf("2037-03-01"), Date.valueOf("2038-11-31"), 3.2, 987654321, "AP-27-SP", 0, "Small"));
+        System.out.println(model.addReservation("Rui Tavares", Date.valueOf("2037-03-01"), Date.valueOf("2038-11-31"), 3.2, 987654321, "AP-27-SP", 0, "Small"));
 
         //System.out.print(model.cancelReservation(6));
 
