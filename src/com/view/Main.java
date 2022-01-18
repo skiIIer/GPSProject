@@ -14,7 +14,7 @@ import java.util.Scanner;
 
 public class Main {
     private static Model model;
-    private static final Scanner scanner = new Scanner(System.in);
+    private static Scanner scanner = new Scanner(System.in);
 
     public static boolean isNumeric(String str) {
         try {
@@ -35,14 +35,22 @@ public class Main {
     }
 
     public static int scanInt() {
-        while (true) {
-            if (scanner.hasNextInt()) {
-                return scanner.nextInt();
-            } else {
-                if (scanner.next().compareToIgnoreCase("quit") == 0)
-                    return -1;
+        String trash;
+
+        try {
+            while (true) {
+                if (scanner.hasNextInt()) {
+                    return Integer.parseInt(scanner.nextLine());
+                } else {
+                    trash=scanner.nextLine();
+                    if (trash.compareToIgnoreCase("quit") == 0) {
+                        return -1;
+                    }
+                }
             }
+        } catch (NumberFormatException e) {
         }
+        return -1;
     }
     public static void Interface_EditReservations(int id){
         String command;
@@ -62,13 +70,13 @@ public class Main {
         System.out.println(model.showDetails(aux));
         System.out.println("Choose the field to edit, 'help' to check available commands or quit by typing 'quit'");
         System.out.print("Command: ");
-        command = scanner.next();
+        command = scanner.nextLine();
         while(!command.equalsIgnoreCase("quit")){
             flag=0;
             switch (command){
                 case "name":
                     System.out.print("Name: ");
-                    aux.setClientName(scanner.next());
+                    aux.setClientName(scanner.nextLine());
                     break;
                 case "check-in":
                     System.out.println("Check-In:");
@@ -141,10 +149,9 @@ public class Main {
                         aux.setNif(auxInt);
                     break;
                 case "vrn":
-
                     do{
                         System.out.print("VRN: ");
-                        auxStr = scanner.next();
+                        auxStr = scanner.nextLine();
                         flag=1;
                         if(auxStr.equals("quit")){
                             flag=0;
@@ -167,7 +174,7 @@ public class Main {
                     System.out.println("Invalid command\n");
             }
             System.out.print("Command: ");
-            command = scanner.next();
+            command = scanner.nextLine();
         }
         System.out.println(model.showDetails(aux));
         System.out.print("Apply configurations?\nCommand (yes/no): ");
@@ -246,8 +253,8 @@ public class Main {
 
         while (true) {
             System.out.print("Vehicle Category (Large, Medium, Small): ");
-            while (!scanner.hasNext()) scanner.next();
-            category = scanner.next();
+            //while (!scanner.hasNext()) scanner.next();
+            category = scanner.nextLine();
             if (category.compareToIgnoreCase("quit") == 0)
                 return;
             if (model.verifyCategory(category))
@@ -256,8 +263,8 @@ public class Main {
 
         while (true) {
             System.out.print("Vehicle Registration Number / VRN (Format:XX-XXXX-XX): ");
-            while (!scanner.hasNext()) scanner.next();
-            vrn = scanner.next();
+            //while (!scanner.hasNext()) scanner.next();
+            vrn = scanner.nextLine();
             if (vrn.compareToIgnoreCase("quit") == 0)
                 return;
             if (model.verifyVRN(vrn))
@@ -276,14 +283,15 @@ public class Main {
         String command = "", cmd = "", value = "";
         int val;
 
-        System.out.println("---------------------------------------------------------------------\n" +
+
+        while (true) {
+            System.out.println("---------------------------------------------------------------------\n" +
                 "MMS / Reservations / View\n" +
                 "---------------------------------------------------------------------");
-        System.out.println("Reservations:");
-        System.out.println(model.viewReservations());
-        System.out.println("---------------------------------------------------------------------\n" +
-                "Commands available:\n\t-> search <VRN>\n\t-> edit <id>\n\t-> cancel <id>\n\t-> quit");
-        while (true) {
+            System.out.println("Reservations:");
+            System.out.println(model.viewReservations());
+            System.out.println("---------------------------------------------------------------------\n" +
+                    "Commands available:\n\t-> search <VRN>\n\t-> edit <id>\n\t-> cancel <id>\n\t-> quit");
             System.out.print("Command: ");
             //while (scanner.hasNext())
             //command += scanner.next();
@@ -327,9 +335,9 @@ public class Main {
                             if (model.cancelReservation(val))
                                 System.out.println("Reservation with id " + val + " cancelled with success");
                             else
-                                System.out.println("Reservation with id " + val + " not found");
-                        } else
-                            return;
+                                System.out.println("Reservation with id " + val + " not found or not suitable for cancellation");
+                        }/* else
+                            return;*/
                     }
                 } else
                     System.out.println(cmd + " is not recognized as a command\n\n");
@@ -350,8 +358,8 @@ public class Main {
                     "---------------------------------------------------------------------");
             System.out.println("Choose an option:\n\t1-Add Reservation\n\t2-View Reservations\n\t3-Quit");
             System.out.print("Option:");
-            while (!scanner.hasNextInt()) scanner.next();
-            option = scanner.nextInt();
+            //while (!scanner.hasNextInt()) scanner.next();
+            option = scanInt();
             switch (option) {
                 case 1:
                     Interface_AddReservations();
@@ -361,6 +369,8 @@ public class Main {
                     break;
                 case 3:
                     return;
+                case -1:
+                    break;
                 default:
                     System.out.println(option + " is not recognized as a command\n\n");
             }
@@ -449,8 +459,8 @@ public class Main {
                     "---------------------------------------------------------------------");
             System.out.println("Choose an option:\n\t1-Reservations\n\t2-Refuel\n\t3-Consult Statistics\n\t4-Quit");
             System.out.print("Option:");
-            while (!scanner.hasNextInt()) scanner.next();
-            option = scanner.nextInt();
+            //while (!scanner.hasNextInt()) scanner.next();
+            option = scanInt();
             switch (option) {
                 case 1:
                     Interface_ReservationsSubmenu();
@@ -464,6 +474,8 @@ public class Main {
                 case 4:
                     System.out.println("\nShutting down...");
                     return;
+                case -1:
+                    break;
                 default:
                     System.out.println(option + " is not recognized as a command\n\n");
             }
