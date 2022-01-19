@@ -270,7 +270,7 @@ public class CRUD {
                 if((flag==0 || lastCount==count) && !rs.isLast()) {
                     c.set(Calendar.MONTH, month - 1);
                     c.set(Calendar.DAY_OF_MONTH, 1);
-                    monthName = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+                    monthName = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US);
 
                     result += monthName.substring(0, 1).toUpperCase() + monthName.substring(1) + " (" + count + " Reservations) ";
                     lastCount = count;
@@ -305,7 +305,7 @@ public class CRUD {
                 if((flag==0 || lastProfit==profit) && !rs.isLast()) {
                     c.set(Calendar.MONTH, month - 1);
                     c.set(Calendar.DAY_OF_MONTH, 1);
-                    monthName = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+                    monthName = c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US);
 
                     result += monthName.substring(0, 1).toUpperCase() + monthName.substring(1) + " (" + profit + " $) ";
                     lastProfit = profit;
@@ -323,7 +323,7 @@ public class CRUD {
 
     public static boolean update(Reservation reservation){
         String sql = "UPDATE mms.reservations " +
-                "SET clientName=?, checkInDate=?, checkOutDate=?, nif=?, vehicleRegistrationNumber=?" +
+                "SET clientName=?, checkInDate=?, checkOutDate=?, nif=?, vehicleRegistrationNumber=?, bill=? " +
                 "WHERE idReservations=?";
 
         try {
@@ -333,7 +333,8 @@ public class CRUD {
             pstm.setDate(3, reservation.getCheckOutDate());
             pstm.setInt(4, reservation.getNif());
             pstm.setString(5, reservation.getRegNumber());
-            pstm.setInt(6, reservation.getId());
+            pstm.setDouble(6, reservation.getBill());
+            pstm.setInt(7, reservation.getId());
 
             if (!pstm.execute())
                 return false;

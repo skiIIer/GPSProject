@@ -19,26 +19,26 @@ public class DatabaseModel {
         stm=null;
     }
 
-    public static int calcBill(int id){
-        int bill = getBill(id);
+    public static int calcBill(int nmrDays, String category){
+        //int bill = getBill(id);
         String sql = "SELECT c.basePrice\n" +
                 "FROM mms.categories c \n" +
-                "INNER JOIN mms.reservations r \n" +
-                "ON c.name = r.category " +
-                "AND r.idReservations = "+id;
+                "WHERE c.name = '" + category + "';";
 
         try {
+            stm = connection.createStatement();
+
             resultSet = stm.executeQuery(sql);
             if(!resultSet.next())
                 return 0;
-            return resultSet.getInt("basePrice") * bill;
+            return resultSet.getInt("basePrice") * nmrDays;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return 0;
     }
 
-    public static int getBill(int id){
+    /*public static int getBill(int id){
         String sql = "SELECT r.bill" +
                 "FROM mms.reservations r" +
                 "WHERE r.idReservations = " + id + ";";
@@ -54,7 +54,7 @@ public class DatabaseModel {
             e.printStackTrace();
         }
         return 0;
-    }
+    }*/
 
     public static int getIdReservation(String VRN){
         String sql = "SELECT r.idReservations\n" +
@@ -99,14 +99,15 @@ public class DatabaseModel {
     }
 
     public int verifySlot(String category, Date checkI, Date checkO){
-        String sql = "SELECT s.idSlots\n" +
+        String sql = " SELECT s.idSlots\n" +
                 "FROM mms.slots s, mms.categories c\n" +
-                "WHERE c.name= '" + category + "' AND c.idCategories = s.Categories_idCategories AND NOT EXISTS\n" +
-                "(SELECT r.Slots_idSlots \n" +
-                "FROM mms.reservations r\n" +
+                "WHERE c.name= 'Large' AND c.idCategories = s.Categories_idCategories AND NOT EXISTS\n" +
+                "(SELECT r.Slots_idSlots\n" +
+                "FROM mms.reservations s, mms.reservations r\n" +
                 "WHERE r.Slots_idSlots = s.idSlots AND\n" +
-                "((r.checkInDate >= '" + checkI + "' and r.checkInDate <= '"+ checkO + "') \n" +
-                "or (r.checkOutDate >= '" + checkI + "' and r.checkOutDate <= '" + checkO + "')));";
+                "((r.checkInDate >= '" + checkI + "' and r.checkInDate <= '" + checkO + "')\n" +
+                "or (r.checkOutDate >= '" + checkI + "' and r.checkOutDate <= '" + checkO + "')\n" +
+                "or (r.checkInDate <= '" + checkI + "' and r.checkOutDate >= '" + checkO + "')));";
 
         try {
             stm = connection.createStatement();

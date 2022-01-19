@@ -6,8 +6,10 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 public class Model {
     CRUD crud;
@@ -35,17 +37,25 @@ public class Model {
         }
     }
 
+
+
+    public int nmrDias(Date checkIn, Date checkOut){
+        long diff = checkOut.getTime() - checkIn.getTime();
+        return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+    }
+
     public boolean addReservation(String name, Date checkIn, Date checkOut, double bill, int nif, String regNumber, int state, String category){
         int availableSlot;
         availableSlot = verifySlot(regNumber, category, checkIn, checkOut);
         if(availableSlot!=0) {
-            Reservation reservation = new Reservation(name, checkIn, checkOut, bill, nif, regNumber, state, category);
+            Reservation reservation = new Reservation(name, checkIn, checkOut, calcBill(nmrDias(checkIn, checkOut), category), nif, regNumber, state, category);
             CRUD.create(reservation, availableSlot);
             return true;
         } else
             return false;
     }
     public boolean editReservation(Reservation reservation){
+        reservation.setBill(calcBill(nmrDias(reservation.getCheckInDate(), reservation.getCheckOutDate()), reservation.getCategory()));
         return CRUD.update(reservation);
     }
 //    public boolean verifyFormat(){}
@@ -129,12 +139,13 @@ public class Model {
             return CRUD.update(id, fuelInEuros);
         return false;
       }
-      
-    public int calcBill(String VRN){
-        int id = DatabaseModel.getIdReservation(VRN);
-        if(id!=0)
-            return DatabaseModel.calcBill(id);
-        return 0;
+
+    public int calcBill(int nmrDays, String category){
+
+        //int id = DatabaseModel.getIdReservation(VRN);
+        //if(id!=0)
+            return DatabaseModel.calcBill(nmrDays, category);
+        //return 0;
     }
 
       public int verifySlot(String vrn, String category, Date checkIn, Date checkOut){

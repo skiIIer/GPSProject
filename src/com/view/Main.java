@@ -36,11 +36,14 @@ public class Main {
 
     public static int scanInt() {
         String trash;
+        int i;
 
         try {
             while (true) {
                 if (scanner.hasNextInt()) {
-                    return Integer.parseInt(scanner.nextLine());
+                    i=Integer.parseInt(scanner.nextLine());
+                    if(i>0)
+                        return i;
                 } else {
                     trash=scanner.nextLine();
                     if (trash.compareToIgnoreCase("quit") == 0) {
@@ -430,11 +433,15 @@ public class Main {
                 if (cmd.compareToIgnoreCase("refuel") == 0) {
                     if (model.verifyVRN(vrn))
                         if (isNumericDouble(value)) {
+
                             b = Double.parseDouble(value);
-                            if (model.refuel(vrn, b))
-                                System.out.println("Boat with vrn " + vrn + " refueled with success");
-                            else
-                                System.out.println("Boat with vrn " + vrn + " not found");
+                            if(b>0) {
+                                if (model.refuel(vrn, b))
+                                    System.out.println("Boat with vrn " + vrn + " refueled with success");
+                                else
+                                    System.out.println("Boat with vrn " + vrn + " not found");
+                            }else
+                                System.out.println("Please insert a valid value for refuel");
                         } else
                             System.out.println("Please insert a valid VRN");
                 }
