@@ -19,13 +19,95 @@ public class DatabaseModel {
         stm=null;
     }
 
-    public int verifySlot(String category, Date checkI, Date checkO){
-        List al = new ArrayList<Integer>();
+    public static int calcBill(int nmrDays, String category){
+        //int bill = getBill(id);
+        String sql = "SELECT c.basePrice\n" +
+                "FROM mms.categories c \n" +
+                "WHERE c.name = '" + category + "';";
 
-        String sql = "SELECT s.idSlots \n" +
-                "FROM mms.slots s\n" +
-                "INNER JOIN mms.categories c\n" +
-                "ON c.name = '" + category + "' and c.idCategories = s.Categories_idCategories;";
+        try {
+            stm = connection.createStatement();
+
+            resultSet = stm.executeQuery(sql);
+            if(!resultSet.next())
+                return 0;
+            return resultSet.getInt("basePrice") * nmrDays;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    /*public static int getBill(int id){
+        String sql = "SELECT r.bill" +
+                "FROM mms.reservations r" +
+                "WHERE r.idReservations = " + id + ";";
+
+        try {
+            stm = connection.createStatement();
+
+            resultSet = stm.executeQuery(sql);
+            if(!resultSet.next())
+                return 0;
+            return resultSet.getInt("bill");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }*/
+
+    public static int getIdReservation(String VRN){
+        String sql = "SELECT r.idReservations\n" +
+                "FROM mms.reservations r \n" +
+                "WHERE r.vehicleRegistrationNumber = '" + VRN +"';";
+
+        try {
+            stm = connection.createStatement();
+
+            resultSet = stm.executeQuery(sql);
+            if(!resultSet.next())
+                return 0;
+            return resultSet.getInt("idReservations");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public boolean verifyExistingReservationVrnDates(String vrn, Date checkI, Date checkO){
+        String sql = "SELECT r.idReservations\n" +
+                "FROM mms.reservations r \n" +
+                "WHERE r.vehicleRegistrationNumber = '" + vrn + "' AND \n" +
+                "((r.checkInDate >= '" + checkI + "' and r.checkInDate <= '" + checkO + "') \n" +
+                "or (r.checkOutDate >= '" + checkI + "' and r.checkOutDate <= '" + checkO + "'));";
+
+
+        try {
+            stm = connection.createStatement();
+
+            resultSet = stm.executeQuery(sql);
+
+            if (!resultSet.isBeforeFirst()) //No data
+                return false;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
+    public int verifySlot(String category, Date checkI, Date checkO){
+        String sql = " SELECT s.idSlots\n" +
+                "FROM mms.slots s, mms.categories c\n" +
+                "WHERE c.name= 'Large' AND c.idCategories = s.Categories_idCategories AND NOT EXISTS\n" +
+                "(SELECT r.Slots_idSlots\n" +
+                "FROM mms.reservations s, mms.reservations r\n" +
+                "WHERE r.Slots_idSlots = s.idSlots AND\n" +
+                "((r.checkInDate >= '" + checkI + "' and r.checkInDate <= '" + checkO + "')\n" +
+                "or (r.checkOutDate >= '" + checkI + "' and r.checkOutDate <= '" + checkO + "')\n" +
+                "or (r.checkInDate <= '" + checkI + "' and r.checkOutDate >= '" + checkO + "')));";
 
         try {
             stm = connection.createStatement();
@@ -33,23 +115,7 @@ public class DatabaseModel {
             resultSet = stm.executeQuery(sql);
 
             while(resultSet.next()){
-                al.add(resultSet.getInt("idSlots"));
-            }
-
-            for(Object i: al){
-                sql = "SELECT s.idSlots \n" +
-                        "FROM mms.slots s\n" +
-                        "WHERE s.idSlots = " + i + " AND NOT EXISTS \n" +
-                        "(SELECT r.Slots_idSlots\n" +
-                        "FROM mms.reservations r\n" +
-                        "WHERE s.idSlots = r.Slots_idSlots and \n" +
-                        "((r.checkInDate > " + checkI + " or r.checkInDate < " + checkO +")" +
-                        "and (r.checkOutDate > " + checkI + " or r.checkOutDate < " + checkO + ")))";
-
-                resultSet = stm.executeQuery(sql);
-                while(resultSet.next()){
-                    return resultSet.getInt("idSlots");
-                }
+                return resultSet.getInt("idSlots");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -60,19 +126,21 @@ public class DatabaseModel {
 
 
     public static void addCategoriesSlots() throws SQLException {
-        String auxString = null; int auxInt=0; String sql;
+        String auxString = null;
+        int auxInt=0, auxIntBasePrice=0;
+        String sql;
         int cont=0;
         Statement stm = connection.createStatement();
         ResultSet rs;
 
         for(int i=0; i<3; i++){
-            if(i==0){ auxInt=15; auxString="Small";}
-            if(i==1){ auxInt=5; auxString="Medium";}
-            if(i==2){ auxInt=2; auxString="Large";}
+            if(i==0){ auxInt=15; auxString="Small"; auxIntBasePrice=100;}
+            if(i==1){ auxInt=5; auxString="Medium"; auxIntBasePrice=200;}
+            if(i==2){ auxInt=2; auxString="Large"; auxIntBasePrice=300;}
             sql = "SELECT * FROM mms.categories WHERE idCategories=" + (i+1);
             rs = stm.executeQuery(sql);
             if(!rs.next()) {
-                sql = "INSERT INTO mms.categories (name) VALUES ('" + auxString + "'); ";
+                sql = "INSERT INTO mms.categories (name, basePrice) VALUES ('" + auxString + "', " + auxIntBasePrice + "); ";
                 stm.executeUpdate(sql);
             }
             for(int j=0; j<auxInt; j++){
@@ -111,7 +179,11 @@ public class DatabaseModel {
         Statement statement = connection.createStatement();
 
         if(!tableExists(connection,"categories")) {
-            sql = "CREATE TABLE `mms`.`categories` (`idCategories` INT NOT NULL AUTO_INCREMENT, `name` VARCHAR(45) NOT NULL, PRIMARY KEY (`idCategories`));";
+            sql = "CREATE TABLE `mms`.`categories` (" +
+                    " `idCategories` INT NOT NULL AUTO_INCREMENT, " +
+                    " `name` VARCHAR(45) NOT NULL, " +
+                    " `basePrice` FLOAT NOT NULL, " +
+                    " PRIMARY KEY (`idCategories`));";
             statement.executeUpdate(sql);
         }else {
             System.out.println("A tabela Categories ja existe!");
@@ -154,10 +226,10 @@ public class DatabaseModel {
                     "    ON DELETE NO ACTION" +
                     "    ON UPDATE NO ACTION);";
             statement.executeUpdate(sql);
-        }else {
-            System.out.println("A tabela Reservations ja existe!");
         }
 
         addCategoriesSlots();
     }
+
+
 }

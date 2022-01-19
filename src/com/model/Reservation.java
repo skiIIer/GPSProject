@@ -11,8 +11,9 @@ public class Reservation {
     private int nif;
     private String regNumber;
     private int state;
-
+    private String slot;
     private String category;
+
 
     public Reservation(String clientName, Date checkInDate, Date checkOutDate, double bill, int nif, String regNumber, int state, String category) {
         this.clientName = clientName;
@@ -23,6 +24,18 @@ public class Reservation {
         this.regNumber = regNumber;
         this.state = state;
         this.category = category;
+    }
+
+    public Reservation(String clientName, Date checkInDate, Date checkOutDate, double bill, int nif, String regNumber, int state, String category,String slot) {
+        this.clientName = clientName;
+        this.checkInDate = checkInDate;
+        this.checkOutDate = checkOutDate;
+        this.bill = bill;
+        this.nif = nif;
+        this.regNumber = regNumber;
+        this.state = state;
+        this.category = category;
+        this.slot = slot;
     }
 
     public String getCategory() {
@@ -96,4 +109,10 @@ public class Reservation {
     public void setState(int state) {
         this.state = state;
     }
+
+    public String getSlot() {
+        return slot;
+    }
+
+    public void setSlot(String slot) { this.slot = slot; }
 }
